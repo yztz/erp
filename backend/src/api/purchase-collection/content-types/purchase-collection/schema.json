@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchase_collections",
+  "info": {
+    "singularName": "purchase-collection",
+    "pluralName": "purchase-collections",
+    "displayName": "PurchaseCollection",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "purchases": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase.purchase",
+      "mappedBy": "purchase_collection"
+    },
+    "comment": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "goods",
+  "info": {
+    "singularName": "good",
+    "pluralName": "goods",
+    "displayName": "good",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "code": {
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    "color": {
+      "type": "string",
+      "required": true
+    },
+    "picture": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "provider": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::provider.provider"
+    },
+    "comment": {
+      "type": "string"
+    }
+  }
+}

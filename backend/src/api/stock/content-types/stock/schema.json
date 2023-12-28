@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stocks",
+  "info": {
+    "singularName": "stock",
+    "pluralName": "stocks",
+    "displayName": "stock",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "good": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::good.good"
+    },
+    "amount": {
+      "type": "integer",
+      "required": true
+    }
+  }
+}
