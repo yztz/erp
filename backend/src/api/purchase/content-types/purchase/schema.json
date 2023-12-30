@@ -23,9 +23,18 @@
     },
     "purchase_collection": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::purchase-collection.purchase-collection",
-      "inversedBy": "purchases"
+      "relation": "oneToOne",
+      "target": "api::purchase-collection.purchase-collection"
+    },
+    "size": {
+      "type": "string",
+      "required": true,
+      "minLength": 1
+    },
+    "sync": {
+      "type": "boolean",
+      "default": true,
+      "required": true
     }
   }
 }

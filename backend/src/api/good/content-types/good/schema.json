@@ -36,6 +36,21 @@
     },
     "comment": {
       "type": "string"
+    },
+    "deleted": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    },
+    "purchase_price": {
+      "type": "decimal",
+      "min": 0,
+      "required": true
+    },
+    "sale_price": {
+      "type": "decimal",
+      "min": 0,
+      "required": true
     }
   }
 }

@@ -1,36 +1,13 @@
-import request from '@/utils/request'
+import strapi from '@/utils/request'
 
-export function login(data) {
-  return request({
-    url: '/auth/local',
-    method: 'post',
-    data
+export function login(identifier, password) {
+  return strapi.login({
+    identifier, password
   })
 }
 
 export function getInfo() {
-  return request({
-    url: '/users/me',
-    method: 'get',
-    // params: { token }
-  })
-}
-
-export function query(params) {
-  return request({
-    url: '/user/query',
-    method: 'get',
-    params
-  })
-
-}
-
-export function deleteUsers(params) {
-  return request({
-    url: '/user/delete',
-    method: 'get',
-    params
-  })
+  return strapi.fetchUser()
 }
 
 export function update(data) {

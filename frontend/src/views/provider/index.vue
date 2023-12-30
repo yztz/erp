@@ -1,47 +1,30 @@
 <template>
-  <div class="user-container">
+  <div class="provider-container">
     <div class="global-container">
       <el-button
         ref="refresh"
         @click="delayLoad"
         icon="el-icon-refresh-right"
-        class="add-new"
-      ></el-button>
-      <el-button @click="openEditor(null)" type="primary" class="add-new"
-        >添加供应商</el-button
-      >
+      />
+      <page-size-selector v-model="pageSize"/>
+
+      <el-button @click="openEditor(null)" type="primary"
+      >添加供应商
+      </el-button>
+
       <transition name="el-fade-in">
         <el-button
           @click="deleteSelections"
           v-show="selections && selections.length > 0"
           type="danger"
-          class="del-sel">
-          删除选中
+        >删除选中
         </el-button>
       </transition>
+      <searcher @search="search"/>
     </div>
 
-    <el-dialog :visible.sync="editorVisible" :title="editorTitle" @opened="clearValidate()">
-      <el-form :rules="rules" ref="editor" :model="this.selected">
-        <el-form-item prop="name" label="供应商名称">
-          <el-input v-model="selected.name" autocomplete="off"></el-input>
-        </el-form-item>
+    <provider-editor @close="closeEditor" ref="editor"/>
 
-        <el-form-item prop="address" label="地址">
-          <el-input v-model="selected.address" autocomplete="off"></el-input>
-        </el-form-item>
-
-        <el-form-item prop="phone" label="联系方式">
-          <el-input v-model="selected.phone" autocomplete="off"></el-input>
-        </el-form-item>
-
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeEditor(false)">取 消</el-button>
-        <el-button @click="closeEditor(true)" type="primary">确 定</el-button>
-      </div>
-    </el-dialog>
     <div class="table-container">
       <el-table
         v-loading="loading"
@@ -53,26 +36,39 @@
         :stripe="true"
         :data="providers"
       >
-        <el-table-column label="选择" type="selection" width="55">
+        <el-table-column label="选择" type="selection" width="55"/>
+
+        <el-table-column width="300" align="center" label="ID">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.id)"/>
+          </template>
         </el-table-column>
 
-        <el-table-column width="300" align="center" prop="id" label="ID" />
-
         <el-table-column
           width="300"
           align="center"
-          prop="name"
           label="供应商名称"
-        />
+        >
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.name)"/>
+          </template>
+        </el-table-column>
 
         <el-table-column
           align="center"
           width="300"
-          prop="address"
           label="地址"
-        />
+        >
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.address)"/>
+          </template>
+        </el-table-column>
 
-        <el-table-column align="center" prop="phone" label="联系方式" />
+        <el-table-column align="center" prop="phone" label="联系方式">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.phone)"/>
+          </template>
+        </el-table-column>
 
         <el-table-column align="center" fixed="right" label="操作">
           <template v-slot="scope">
@@ -80,10 +76,12 @@
               @click="openEditor(scope.row)"
               type="primary"
               size="small"
-              >编辑</el-button
+            >编辑
+            </el-button
             >
-            <el-button @click="deleteUser(scope.row)" type="danger" size="small"
-              >删除</el-button
+            <el-button @click="deleteProvider(scope.row)" type="danger" size="small"
+            >删除
+            </el-button
             >
           </template>
         </el-table-column>
@@ -96,190 +94,167 @@
         @current-change="load"
         :current-page.sync="pageIndex"
         :page-count="totalPage"
-      >
-      </el-pagination>
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { queryAll, del, update, add } from "@/api/provider";
+import { queryAll, del } from '@/api/provider'
+import PageSizeSelector from '@/components/PageSizeSelector'
+import { brightenKeyword } from '@/utils'
+import searcher from '@/components/Searcher'
+import providerEditor from '@/views/provider/providerEditor'
 
-const EDITOR_MODE_EDIT = 0;
-const EDITOR_MODE_NEW = 1;
 export default {
-  name: "index",
-  computed: {
-    editorTitle() {
-      return this.mode === EDITOR_MODE_EDIT ? "供应商编辑" : "新建供应商";
-    },
+  name: 'index',
+  components: {
+    PageSizeSelector, searcher, providerEditor
   },
 
   data() {
     return {
-      mode: -1,
       loading: false,
-      editorVisible: false,
+
+      // 搜索
+      searchText: '',
+      currentHighlight: '',
+
+      // 数据
       backup: null,
       selected: {},
       selections: [],
-      users: [],
       providers: [],
-      username: "",
+
+      // 分页
       pageIndex: 1,
       totalPage: 0,
-      pageSize: 10,
-      rules: {
-        name: {required: true, message: "该字段不能为空"},
-        address: {required: true, message: "该字段不能为空"},
-        phone: {required: true, message: "该字段不能为空"},
-      }
-    };
+      pageSize: 15
+
+    }
   },
+
+  watch: {
+    pageSize() {
+      this.delayLoad()
+    }
+  },
+
   mounted() {
-    this.load();
+    this.load()
   },
   methods: {
-
-    clearValidate() {
-      this.$refs.editor.clearValidate();
+    formatter(value) {
+      return brightenKeyword(value, this.currentHighlight)
     },
 
-    success(msg) {
-      this.$message.success(msg);
-    },
-
-    fail(msg) {
-      this.$message.error(msg);
+    search(value) {
+      this.searchText = value
+      this.pageIndex = 1
+      this.delayLoad()
     },
 
     handleSelectionChange(val) {
-      this.selections = val;
+      this.selections = val
     },
 
     __delete(items) {
-      let ids = items.map((item) => item.id);
-      deleteUsers({ ids }).then((res) => {
-        this.load();
-        this.$refs.table.clearSelection();
-        this.success(res.message);
-      });
+      let ids = items.map((item) => item.id)
+      Promise.all(items.map(({ id }) => del(id))).then(res => {
+        this.delayLoad()
+        this.$refs.table.clearSelection()
+        this.$message.success('删除成功')
+      }).catch(err => {
+        this.$message.error('删除失败')
+      })
     },
 
-    deleteUser(item) {
-      this.$confirm("确认删除此用户？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+    deleteProvider(item) {
+      this.$confirm('确认删除此供应商？（所有相关商品以及库存都将被永久删除！）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.__delete([item])
+      }).catch(() => {
       })
-        .then(() => {
-          this.__delete([item]);
-        })
-        .catch(() => {});
     },
 
     deleteSelections() {
-      this.$confirm("确认删除所有选中用户？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm('确认删除所有选中供应商？（所有相关商品以及库存都将被永久删除！', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.__delete(this.selections)
+      }).catch(() => {
       })
-        .then(() => {
-          this.__delete(this.selections);
-        })
-        .catch(() => {});
     },
 
     openEditor(item) {
-      this.mode = item == null ? EDITOR_MODE_NEW : EDITOR_MODE_EDIT;
-      this.backup = item;
-      this.selected = { ...item };
-      this.editorVisible = true;
+      this.$refs.editor.show(item)
     },
 
-    closeEditor(save) {
-      if (save) {
-        if (this.$refs.editor.validate((valid) => {
-          if (!valid) {
-            return
-          }
-        }))
-        if (this.mode === EDITOR_MODE_EDIT) {
-          // 编辑模式
-          update(this.selected).then((res) => {
-            console.log(res);
-            Object.assign(this.backup, res.data);
-            this.success("更新成功");
-            this.editorVisible = false;
-          });
-        } else if (this.mode === EDITOR_MODE_NEW) {
-          // 新建模式
-          add(this.selected).then((res) => {
-            this.load();
-            this.success("添加成功");
-            this.editorVisible = false;
-          }).catch(e=>{
-            this.fail("添加失败");
-          })
-        }
+    closeEditor() {
+      this.delayLoad()
+    },
+
+    getFilters() {
+      let searchText = this.searchText
+      if (searchText === '') {
+        return undefined
       } else {
-        this.editorVisible = false;
+        let id = Number.parseInt(searchText)
+        let filters = {
+          $or: [
+            { name: { $containsi: searchText } },
+            { address: { $containsi: searchText } },
+            { phone: { $containsi: searchText } }
+          ]
+        }
+        if (id !== Number.NaN) { // 数字
+          filters.$or.push({ id: { $eq: id } })
+        }
+        return filters
       }
     },
 
     __load() {
-      // console.log("start loading...");
-      queryAll()
-        .then((res) => {
-          // console.log(res);
-          let data = res.data;
-          let meta = res.meta;
-          this.providers = data.map((el) => ({ id: el.id, ...el.attributes }));
-          console.log(this.providers);
-          this.loading = false;
-          this.$refs.refresh.$el.blur();
-        })
-        .catch((err) => {
-          console.log("load err" + err);
-        });
+      let page = this.pageIndex
+      let pageSize = this.pageSize
+      let filters = this.getFilters()
+      return queryAll({
+        filters,
+        pagination: { page, pageSize }
+      }).then((res) => {
+        let { data, meta: { pagination } } = res
+        this.totalPage = pagination.pageCount
+        this.pageIndex = pagination.page
+        this.currentHighlight = this.searchText
+
+        this.providers = data
+
+        this.loading = false
+        this.$refs.refresh.$el.blur()
+      }).catch((err) => {
+        console.log('load err' + err)
+      })
     },
 
     load() {
-      this.loading = true;
-      this.__load();
+      this.loading = true
+      return this.__load()
     },
 
     delayLoad() {
-      this.loading = true;
-      setTimeout(this.__load, 500);
-    },
-  },
-};
+      this.loading = true
+      setTimeout(this.__load, 300)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.user-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-.global-container {
-  margin: 20px;
+.provider-container {
+  padding: 20px;
 }
 
-.table-container {
-  width: 100%;
-
-  .table {
-    margin-left: 20px;
-  }
-}
-
-.page-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  bottom: 20px;
-  position: absolute;
-}
 </style>

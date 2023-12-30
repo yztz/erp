@@ -1,15 +1,17 @@
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
+//
+// const TokenKey = 'X-Token'
 
-const TokenKey = 'X-Token'
+import strapi from '@/utils/request'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return strapi.getToken()
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return strapi.setToken(token)
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return strapi.removeToken()
 }

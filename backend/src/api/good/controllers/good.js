@@ -1,9 +1,13 @@
-'use strict';
+'use strict'
 
 /**
  * good controller
  */
 
-const { createCoreController } = require('@strapi/strapi').factories;
+// const { parseMultipartData, sanitizeEntity } = require('@strapi/utils')
 
-module.exports = createCoreController('api::good.good');
+const { createCoreController } = require('@strapi/strapi').factories
+
+module.exports = createCoreController('api::good.good', ({ strapi }) => ({
+
+}))

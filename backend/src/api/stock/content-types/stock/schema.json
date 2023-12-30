@@ -20,6 +20,11 @@
     "amount": {
       "type": "integer",
       "required": true
+    },
+    "size": {
+      "type": "string",
+      "required": true,
+      "minLength": 1
     }
   }
 }

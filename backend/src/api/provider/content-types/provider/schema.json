@@ -23,6 +23,11 @@
     "phone": {
       "type": "string",
       "required": true
+    },
+    "deleted": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

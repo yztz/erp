@@ -13,7 +13,7 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // For example, Mac: sudo npm run
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
-const port = process.env.port || process.env.npm_config_port || 9528 // dev port
+const port = process.env.port || process.env.npm_config_port || 8080 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -33,6 +33,7 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
+    host: '0.0.0.0',
     port: port,
     open: true,
     overlay: {
@@ -41,7 +42,10 @@ module.exports = {
     },
     proxy: {
       '/uploads': {
-        target: "http://192.168.100.111:1337"
+        target: "http://localhost:8082"
+      },
+      '/api/upload': {
+        target: "http://localhost:8082"
       }
     }
     // before: require('./mock/mock-server.js')
@@ -52,11 +56,19 @@ module.exports = {
     name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
-      }
+        '@': resolve('src'),
+      },
+      extensions: ['*', '.mjs', '.js', '.vue', '.json']
     }
   },
   chainWebpack(config) {
+    config.module // fixes https://github.com/graphql/graphql-js/issues/1272
+      .rule('mjs$')
+      .test(/\.mjs$/)
+      .include
+      .add(/node_modules/)
+      .end()
+      .type('javascript/auto');
     // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
       {

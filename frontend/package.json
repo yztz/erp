@@ -4,7 +4,7 @@
   "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
   "author": "Pan <panfree23@gmail.com>",
   "scripts": {
-    "dev": "vue-cli-service serve",
+    "dev": "vue-cli-service serve --host 0.0.0.0",
     "build": "vue-cli-service build --mode production",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
@@ -15,11 +15,13 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
+    "@faker-js/faker": "^8.3.1",
     "axios": "0.18.1",
     "core-js": "^3.33.0",
     "element-ui": "^2.15.14",
     "graphql": "^16.8.1",
     "js-cookie": "2.2.0",
+    "moment": "^2.30.1",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",

@@ -63,3 +63,31 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+.table-container {
+  width: 100%;
+}
+
+.page-container {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.global-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  position: relative;
+
+  > *:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
+.search-highlight {
+  color: #fa4633;
+  text-decoration: underline;
+  font-weight: bold;
+}

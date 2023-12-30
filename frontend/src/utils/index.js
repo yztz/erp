@@ -45,7 +45,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -114,4 +116,22 @@ export function param2Obj(url) {
     }
   })
   return obj
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function brightenKeyword(val, keyword) {
+  keyword = keyword + ''
+
+  val = val + ""
+  if (keyword.length > 0) {
+    // 将关键字数组转为正则表达式
+    const regex = new RegExp(escapeRegExp(keyword), 'gi')
+    // 使用replace方法替换匹配的关键字为带有highlight类的span标签
+    return  val.replace(regex, match => `<span class="search-highlight">${match}</span>`)
+  } else {
+    return val
+  }
 }

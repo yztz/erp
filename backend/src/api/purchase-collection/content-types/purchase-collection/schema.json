@@ -12,12 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "purchases": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::purchase.purchase",
-      "mappedBy": "purchase_collection"
-    },
     "comment": {
       "type": "string"
     }

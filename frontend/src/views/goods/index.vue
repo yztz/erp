@@ -1,51 +1,31 @@
 <template>
-  <div class="user-container">
+  <div class="good-container">
     <div class="global-container">
       <el-button
         ref="refresh"
         @click="delayLoad"
         icon="el-icon-refresh-right"
-        class="add-new"
-      ></el-button>
-      <el-button @click="openEditor(null)" type="primary" class="add-new"
-        >添加商品</el-button
-      >
+      />
+
+      <page-size-selector v-model="pageSize"/>
+
+      <el-button @click="openEditor(null)" type="primary"
+      >添加商品
+      </el-button>
+
       <transition name="el-fade-in">
         <el-button
           @click="deleteSelections"
           v-show="selections && selections.length > 0"
           type="danger"
-          class="del-sel"
-        >
-          删除选中
+        >删除选中
         </el-button>
       </transition>
+
+      <searcher @search="search"/>
     </div>
 
-    <el-dialog
-      :visible.sync="editorVisible"
-      :title="editorTitle"
-      @opened="clearValidate()"
-    >
-      <el-form :rules="rules" ref="editor" :model="this.selected">
-        <el-form-item prop="name" label="商品名称">
-          <el-input v-model="selected.name" autocomplete="off"></el-input>
-        </el-form-item>
-
-        <el-form-item prop="address" label="地址">
-          <el-input v-model="selected.address" autocomplete="off"></el-input>
-        </el-form-item>
-
-        <el-form-item prop="phone" label="联系方式">
-          <el-input v-model="selected.phone" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeEditor(false)">取 消</el-button>
-        <el-button @click="closeEditor(true)" type="primary">确 定</el-button>
-      </div>
-    </el-dialog>
+    <goods-editor ref="editor" @close="closeEditor"/>
     <div class="table-container">
       <el-table
         v-loading="loading"
@@ -57,34 +37,51 @@
         :stripe="true"
         :data="goods"
       >
-        <el-table-column label="选择" type="selection" width="55">
+        <el-table-column label="选择" type="selection" width="55"/>
+
+        <el-table-column width="100" align="center" label="ID">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.id)"/>
+          </template>
         </el-table-column>
 
-        <!-- <el-table-column width="300" align="center" prop="id" label="ID" /> -->
+        <el-table-column width="300" align="center" label="货号">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.code)"/>
+          </template>
+        </el-table-column>
 
-        <el-table-column width="300" align="center" prop="code" label="货号" />
+        <el-table-column align="center" prop="provider.name" label="供应商"/>
 
-        <el-table-column align="center" width="300" prop="color" label="颜色" />
 
-        <el-table-column
-          align="center"
-          prop="provider"
-          label="供应商"
-        />
+        <el-table-column align="center" width="200" label="颜色">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.color)"/>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" width="200" label="成本价" prop="purchase_price"></el-table-column>
+        <el-table-column align="center" width="200" label="销售价" prop="sale_price"></el-table-column>
+
 
         <el-table-column align="center" label="图片">
           <template v-slot="scope">
-            <el-image 
+            <el-image
               v-if="scope.row.picture"
               fit="contain"
               style="width: 100px; height: 100px"
-              :src="scope.row.picture">
-              
-            </el-image>
-            <span v-else>
-              无
-            </span>
+              :src="scope.row.picture.url"
+              :preview-src-list="[scope.row.picture.formats.large.url]"
+            />
+            <span v-else>无</span>
           </template>
+        </el-table-column>
+
+        <el-table-column
+          align="center"
+          label="备注"
+        >
+          <template v-slot="scope">{{ scope.row.comment ? scope.row.comment : '-' }}</template>
         </el-table-column>
 
         <el-table-column align="center" fixed="right" label="操作">
@@ -93,15 +90,16 @@
               @click="openEditor(scope.row)"
               type="primary"
               size="small"
-              >编辑</el-button
-            >
-            <el-button @click="deleteUser(scope.row)" type="danger" size="small"
-              >删除</el-button
-            >
+            >编辑
+            </el-button>
+            <el-button @click="deleteGood(scope.row)" type="danger" size="small"
+            >删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+
     <div class="page-container">
       <el-pagination
         background
@@ -116,202 +114,159 @@
 </template>
 
 <script>
-import { queryAll, del, update, add } from "@/api/goods";
+import pageSizeSelector from '@/components/PageSizeSelector'
+import { queryAll, del, update, add } from '@/api/goods'
+import goodsEditor from '@/views/goods/goodsEditor'
+import { brightenKeyword } from '@/utils'
+import searcher from '@/components/Searcher'
 
-const EDITOR_MODE_EDIT = 0;
-const EDITOR_MODE_NEW = 1;
 export default {
-  name: "index",
-  computed: {
-    editorTitle() {
-      return this.mode === EDITOR_MODE_EDIT ? "供应商编辑" : "新建供应商";
-    },
+  name: 'index',
+  components: {
+    pageSizeSelector, goodsEditor, searcher
   },
 
   data() {
     return {
+      loadProgress: 0,
       mode: -1,
       loading: false,
-      editorVisible: false,
-      backup: null,
-      selected: {},
+
       selections: [],
+      providers: [],
       goods: [],
-      username: "",
+
       pageIndex: 1,
       totalPage: 0,
       pageSize: 10,
-      rules: {
-        name: { required: true, message: "该字段不能为空" },
-        address: { required: true, message: "该字段不能为空" },
-        phone: { required: true, message: "该字段不能为空" },
-      },
-    };
+
+      searchText: '',
+      currentHighlight: ''
+    }
   },
   mounted() {
-    this.load();
+    this.load()
   },
+
+  watch: {
+    pageSize() {
+      this.delayLoad()
+    }
+  },
+
   methods: {
-    clearValidate() {
-      this.$refs.editor.clearValidate();
+    search(value) {
+      this.searchText = value
+      this.pageIndex = 1
+      this.delayLoad()
     },
 
-    success(msg) {
-      this.$message.success(msg);
-    },
-
-    fail(msg) {
-      this.$message.error(msg);
+    formatter(value) {
+      return brightenKeyword(value, this.currentHighlight)
     },
 
     handleSelectionChange(val) {
-      this.selections = val;
+      this.selections = val
     },
 
     __delete(items) {
-      let ids = items.map((item) => item.id);
-      deleteUsers({ ids }).then((res) => {
-        this.load();
-        this.$refs.table.clearSelection();
-        this.success(res.message);
-      });
+      let ids = items.map((item) => item.id)
+      Promise.all(items.map(({ id }) => del(id))).then(res => {
+        this.delayLoad()
+        this.$refs.table.clearSelection()
+        this.$message.success('删除成功')
+      }).catch(err => {
+        this.$message.error('删除失败')
+      })
     },
 
-    deleteUser(item) {
-      this.$confirm("确认删除此用户？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+    deleteGood(item) {
+      this.$confirm('确认删除此商品？（相关库存也将被永久删除！）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.__delete([item])
+      }).catch(() => {
       })
-        .then(() => {
-          this.__delete([item]);
-        })
-        .catch(() => {});
     },
 
     deleteSelections() {
-      this.$confirm("确认删除所有选中用户？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm('确认删除所有选中商品？（相关库存也将被永久删除！）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.__delete(this.selections)
+      }).catch(() => {
       })
-        .then(() => {
-          this.__delete(this.selections);
-        })
-        .catch(() => {});
     },
 
     openEditor(item) {
-      this.mode = item == null ? EDITOR_MODE_NEW : EDITOR_MODE_EDIT;
-      this.backup = item;
-      this.selected = { ...item };
-      this.editorVisible = true;
+      this.$refs.editor.show(item)
     },
 
-    closeEditor(save) {
-      if (save) {
-        if (
-          this.$refs.editor.validate((valid) => {
-            if (!valid) {
-              return;
-            }
-          })
-        )
-          if (this.mode === EDITOR_MODE_EDIT) {
-            // 编辑模式
-            update(this.selected).then((res) => {
-              console.log(res);
-              Object.assign(this.backup, res.data);
-              this.success("更新成功");
-              this.editorVisible = false;
-            });
-          } else if (this.mode === EDITOR_MODE_NEW) {
-            // 新建模式
-            add(this.selected)
-              .then((res) => {
-                this.load();
-                this.success("添加成功");
-                this.editorVisible = false;
-              })
-              .catch((e) => {
-                this.fail("添加失败");
-              });
-          }
+    closeEditor() {
+      this.delayLoad()
+    },
+
+    getFilters() {
+      let searchText = this.searchText
+      if (searchText === '') {
+        return undefined
       } else {
-        this.editorVisible = false;
+        let id = Number.parseInt(searchText)
+        let filters = {
+          $or: [
+            { code: { $containsi: searchText } },
+            { color: { $containsi: searchText } },
+            { comment: { $containsi: searchText } }
+          ]
+        }
+        if (id !== Number.NaN) { // 数字
+          filters.$or.push({ id: { $eq: id } })
+        }
+        return filters
       }
     },
 
     __load() {
-      // console.log("start loading...");
-      queryAll()
-        .then((res) => {
-          console.log(res);
-          let data = res.data;
-          let meta = res.meta;
+      let page = this.pageIndex
+      let pageSize = this.pageSize
+      let filters = this.getFilters()
+      queryAll({
+        filters,
+        pagination: { page, pageSize },
+        populate: '*'
+      }).then(res => {
+        let { data, meta: { pagination } } = res
+        this.totalPage = pagination.pageCount
+        this.pageIndex = pagination.page
+        this.currentHighlight = this.searchText
 
-          this.goods = data.map((el) => {
-            let {
-              id,
-              attributes: { code, color, picture, provider },
-            } = el;
-            console.log(picture);
-            return {
-              id,
-              code,
-              color, 
-              picture: picture.data && picture.data.attributes.url || '',
-              provider: provider.data.attributes.name
-            }
-          });
-          console.log(this.goods);
-          this.loading = false;
-          this.$refs.refresh.$el.blur();
-        })
-        .catch((err) => {
-          console.log("load err" + err);
-        });
+        this.goods = data
+        this.loading = false
+        this.$refs.refresh.$el.blur()
+      }).catch((err) => {
+        this.$message.error('查询失败')
+      })
     },
 
     load() {
-      this.loading = true;
-      this.__load();
+      this.loading = true
+      this.__load()
     },
 
     delayLoad() {
-      this.loading = true;
-      setTimeout(this.__load, 500);
-    },
-  },
-};
+      this.loading = true
+      setTimeout(this.__load, 500)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.user-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+.good-container {
+  padding: 20px;
 }
-.global-container {
-  margin: 20px;
-}
-
-.table-container {
-  width: 100%;
-
-  .table {
-    margin-left: 20px;
-  }
-}
-
-.page-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  bottom: 20px;
-  position: absolute;
-}
-
 
 
 </style>

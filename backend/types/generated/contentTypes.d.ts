@@ -789,6 +789,17 @@ export interface ApiGoodGood extends Schema.CollectionType {
       'api::provider.provider'
     >;
     comment: Attribute.String;
+    deleted: Attribute.Boolean & Attribute.DefaultTo<false>;
+    purchase_price: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<{
+        min: 0;
+      }>;
+    sale_price: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<{
+        min: 0;
+      }>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::good.good', 'oneToOne', 'admin::user'> &
@@ -813,6 +824,9 @@ export interface ApiProviderProvider extends Schema.CollectionType {
     name: Attribute.String & Attribute.Required;
     address: Attribute.String & Attribute.Required;
     phone: Attribute.String & Attribute.Required;
+    deleted: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -850,9 +864,15 @@ export interface ApiPurchasePurchase extends Schema.CollectionType {
     amount: Attribute.Integer & Attribute.Required;
     purchase_collection: Attribute.Relation<
       'api::purchase.purchase',
-      'manyToOne',
+      'oneToOne',
       'api::purchase-collection.purchase-collection'
     >;
+    size: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 1;
+      }>;
+    sync: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<true>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -883,11 +903,6 @@ export interface ApiPurchaseCollectionPurchaseCollection
     draftAndPublish: false;
   };
   attributes: {
-    purchases: Attribute.Relation<
-      'api::purchase-collection.purchase-collection',
-      'oneToMany',
-      'api::purchase.purchase'
-    >;
     comment: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -920,6 +935,11 @@ export interface ApiStockStock extends Schema.CollectionType {
   attributes: {
     good: Attribute.Relation<'api::stock.stock', 'oneToOne', 'api::good.good'>;
     amount: Attribute.Integer & Attribute.Required;
+    size: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 1;
+      }>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
