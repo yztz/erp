@@ -7,6 +7,7 @@
     @change="search"
     v-model="value"
     clearable
+    :disabled="disable"
     placeholder="输入关键字搜索"
   />
 <!--    <svg-icon icon-class="question" class-name="question"/>-->
@@ -20,7 +21,8 @@ export default {
     debounce: {
       default: 500,
       type: Number
-    }
+    },
+    disable: Boolean,
   },
   data() {
     return {

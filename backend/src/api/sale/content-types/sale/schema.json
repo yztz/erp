@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sales",
+  "info": {
+    "singularName": "sale",
+    "pluralName": "sales",
+    "displayName": "Sale"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "good": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::good.good"
+    },
+    "sale_collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::sale-collection.sale-collection"
+    },
+    "amount": {
+      "type": "integer",
+      "required": true
+    },
+    "size": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

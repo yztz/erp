@@ -80,7 +80,6 @@
         @selection-change="handleSelectionChange"
         class="table"
         row-key="id"
-        :border="true"
         :stripe="true"
         :data="products">
 

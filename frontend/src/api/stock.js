@@ -3,9 +3,13 @@ import strapi from '@/utils/request'
 
 export function queryAllStocks(params) {
   return strapi.find("stocks", {
-    populate: 'good.provider',
     ...params
   })
+}
+
+
+export function queryStockByID(id) {
+  return strapi.findOne("stocks", id)
 }
 
 export function delStock(id, params) {

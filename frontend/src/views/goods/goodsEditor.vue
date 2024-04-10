@@ -2,7 +2,6 @@
   <el-dialog
     :visible.sync="visible"
     :title="editorTitle"
-    @close="onClose"
     :close-on-click-modal="false"
   >
 
@@ -128,7 +127,13 @@ export default {
       loadProgress: 0,
       loadingProviders: false,
       visible: false,
-      goods: this.getDefaultGoods(),
+      goods: {
+        code: '',
+        color: '',
+        comment: '',
+        provider: { id: null, name: null },
+        picture: null
+      },
       providers: [],
       rules: {
         code: { required: true, message: '该字段不能为空' },
@@ -164,13 +169,9 @@ export default {
           this.goods = { ...goods }
         } else {
           this.mode = EDITOR_MODE_NEW
-          this.goods = this.getDefaultGoods()
+          this.$refs.form.resetFields()
         }
       })
-    },
-
-    onClose() {
-      this.$refs.form.resetFields()
     },
 
     close(save) {
@@ -200,15 +201,15 @@ export default {
         this.visible = false
       }
     },
-    getDefaultGoods() {
-      return {
-        code: '',
-        color: '',
-        comment: '',
-        provider: { id: null, name: null },
-        picture: null
-      }
-    },
+    // getDefaultGoods() {
+    //   return {
+    //     code: '',
+    //     color: '',
+    //     comment: '',
+    //     provider: { id: null, name: null },
+    //     picture: null
+    //   }
+    // },
     beforeUpload(file) {
       const valid = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/bmp'
       // const isLt2M = file.size / 1024 / 1024 < 2;

@@ -5,9 +5,11 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <scan-status class="scanner-container"></scan-status>
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img src="@/assets/avator.gif" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -29,11 +31,13 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import ScanStatus from '@/components/ScannerStatus'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    ScanStatus,
   },
   computed: {
     ...mapGetters([
@@ -79,7 +83,11 @@ export default {
   }
 
   .right-menu {
-    float: right;
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    right: 0;
+    width: 30%;
     height: 100%;
     line-height: 50px;
 
@@ -104,9 +112,12 @@ export default {
         }
       }
     }
+    .scanner-container {
+      margin-right: 30px;
+    }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 10px;
 
       .avatar-wrapper {
         margin-top: 5px;

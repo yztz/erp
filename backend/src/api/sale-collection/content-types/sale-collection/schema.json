@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sale_collections",
+  "info": {
+    "singularName": "sale-collection",
+    "pluralName": "sale-collections",
+    "displayName": "SaleCollection"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "comment": {
+      "type": "string"
+    }
+  }
+}

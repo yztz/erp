@@ -12,7 +12,7 @@ module.exports = createCoreService('api::stock.stock', ({ strapi }) => ({
     console.log(params)
     let { data } = params
     console.log(data)
-    let stock = await strapi.entityService.findMany('api::stock.stock', {
+    let stocks = await strapi.entityService.findMany('api::stock.stock', {
       // fields: ['id'],
       filters: {
         good: {
@@ -23,13 +23,13 @@ module.exports = createCoreService('api::stock.stock', ({ strapi }) => ({
       populate: 'good'
     })
     // console.log(stock)
-    assert(stock.length <= 1)
-    if (stock.length === 0) {
+    assert(stocks.length <= 1)
+    if (stocks.length === 0) {
       return await super.create(params)
     } else {
-      stock = stock[0]
+      let stock = stocks[0]
       console.log(`add stock ID ${stock.id} amount from ${stock.amount} to ${stock.amount + data.amount}`)
       return await strapi.entityService.update('api::stock.stock', stock.id, { data: { amount: stock.amount + data.amount } })
-    }
+    } 
   }
 }))

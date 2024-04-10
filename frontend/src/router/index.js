@@ -91,6 +91,17 @@ export const constantRoutes = [
     }],
   },
   {
+    path: '/sale',
+    component: Layout,
+
+    children: [{
+      path: 'index',
+      name: "Sale",
+      component: () => import('@/views/sale/index'),
+      meta: {title: '出货', icon: 'el-icon-shopping-cart-2'},
+    }],
+  },
+  {
     path: '/stock',
     component: Layout,
 
@@ -99,6 +110,17 @@ export const constantRoutes = [
       name: "Stock",
       component: () => import('@/views/stock/index'),
       meta: {title: '库存', icon: 'el-icon-receiving'},
+    }],
+  },
+  {
+    path: '/barcode',
+    component: Layout,
+
+    children: [{
+      path: 'index',
+      name: "Barcode",
+      component: () => import('@/views/barcode/index'),
+      meta: {title: '条码生成', icon: 'el-icon-s-ticket'},
     }],
   },
   {

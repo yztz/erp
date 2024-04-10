@@ -23,10 +23,9 @@ module.exports = createCoreService('api::purchase-collection.purchase-collection
     // 创建总单
     let entity = await super.create(params)
     assert(entity)
-    console.log(entity)
 
     // 创建详单
-    console.log(`creating ${purchases.length} detail purchases`)
+    strapi.log.info(`[purchase-collection] creating ${purchases.length} detail purchases`)
     purchases = purchases.map(el => ({
       good: el.good.id,
       amount: el.amount,
@@ -35,39 +34,10 @@ module.exports = createCoreService('api::purchase-collection.purchase-collection
       sync: syncFlag,
     }))
     for (let purchase of purchases) {
-      console.log('creating ' + JSON.stringify(purchase))
-      let res = await strapi.entityService.create('api::purchase.purchase', {
+      strapi.log.info('[purchase-collection] creating ' + JSON.stringify(purchase))
+      let res = await strapi.service('api::purchase.purchase').create({
         data: purchase
-      })
-
-      // 增加库存
-      if (syncFlag) {
-        let stock = await strapi.entityService.findMany('api::stock.stock', {
-          // fields: ['id'],
-          filters: {
-            good: {
-              id: purchase.good
-            },
-            size: purchase.size
-          },
-          populate: 'good'
-        })
-        assert(stock.length <= 1)
-        if (stock.length === 1) { // 库存存在
-          stock = stock[0]
-          await strapi.entityService.update('api::stock.stock', stock.id, { data: { amount: stock.amount + purchase.amount } })
-          console.log(`add stock ID ${stock.id} amount from ${stock.amount} to ${stock.amount + purchase.amount}`)
-        } else { // 不存在
-          stock = await strapi.entityService.create('api::stock.stock', {
-            data: {
-              amount: purchase.amount,
-              size: purchase.size,
-              good: purchase.good
-            }
-          })
-          console.log(`create stock ${stock}`)
-        }
-      }
+      }) 
     }
 
     return entity
@@ -89,7 +59,7 @@ module.exports = createCoreService('api::purchase-collection.purchase-collection
           where: { id }
         })
       ))
-    console.log(`${deletedPurchases.length} related items deleted`)
+      strapi.log.info(`[purchase-collection] ${deletedPurchases.length} related items deleted`)
     // 删除自身
     return await super.delete(id, params)
   }

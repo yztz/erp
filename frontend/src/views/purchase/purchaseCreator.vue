@@ -8,15 +8,14 @@
     title="新建进货单"
   >
 
-    <goods-selector ref="form" @submit="addPurchase"/>
+    <goods-selector ref="form" button-title="添  加" @submit="addPurchase"/>
 
     <el-table
       style="margin-top: 20px"
-      border
       height="300px"
       empty-text="请在上方添加订单详情"
       row-key="id"
-      :data="purchases.purchases"
+      :data="order.purchases"
     >
       <el-table-column align="center" prop="good.code" label="货号"/>
       <el-table-column align="center" prop="provider.name" label="供应商"/>
@@ -34,10 +33,10 @@
       </el-table-column>
     </el-table>
 
-    <el-input style="margin-top: 20px" type="textarea" :rows="2" v-model="purchases.comment" autocomplete="off"
+    <el-input style="margin-top: 20px" type="textarea" :rows="2" v-model="order.comment" autocomplete="off"
               placeholder="备注信息"
     />
-    <el-switch style="margin-top: 20px" v-model="purchases.syncFlag" active-text="添加到库存" active-color="#13ce66"/>
+    <el-switch style="margin-top: 20px" v-model="order.syncFlag" active-text="添加到库存" active-color="#13ce66"/>
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="close(false)">取 消</el-button>
@@ -48,31 +47,40 @@
 
 <script>
 import { queryPurchaseFromID, addPurchaseCollection, addPurchase } from '@/api/purchase'
-import moment from 'moment/moment'
-import assert from 'assert'
-import * as Provider from '@/api/provider'
-import * as Goods from '@/api/goods'
-import GoodsSelector from '@/views/purchase/goodsSelector'
+import GoodsSelector from '@/components/GoodSelector'
 
 export default {
   name: 'purchaseCreator',
   components: { GoodsSelector },
   computed: {},
+  
   data() {
     return {
       loadingText: '',
       loading: false,
       visible: false,
-      purchases: this.getDefaultPurchases(),
+      order: this.getDefaultOrder(),
     }
   },
   methods: {
     addPurchase(goods) {
-      this.purchases.purchases.push({
-        ...goods
+      // console.log(goods);
+      
+      let id = this.order.purchases.findIndex(item => {
+        // console.log(item);
+        return item.good.id == goods.good.id && item.provider.id == goods.provider.id && item.size == goods.size
       })
+
+      if (id !== -1) {
+        this.order.purchases[id].amount += goods.amount
+      } else {
+        this.order.purchases.push({
+          ...goods
+        })
+      }
+
     },
-    getDefaultPurchases() {
+    getDefaultOrder() {
       return {
         comment: '',
         purchases: [],
@@ -81,11 +89,11 @@ export default {
     },
 
     remove(item) {
-      // this.purchases.remove(item)
-      this.purchases.purchases = this.purchases.purchases.filter(obj => obj !== item)
+      // this.order.remove(item)
+      this.order.purchases = this.order.purchases.filter(obj => obj !== item)
     },
     show() {
-      this.purchases = this.getDefaultPurchases()
+      this.order = this.getDefaultOrder()
       this.visible = true
       this.$nextTick(() => {
         this.$refs.form.renew()
@@ -99,16 +107,16 @@ export default {
         return
       }
 
-      if (this.purchases.purchases.length === 0) {
+      if (this.order.purchases.length === 0) {
         this.$message.warning('当前订单未包含任何商品')
         return
       }
 
       this.loadingText = '正在创建进货单'
       this.loading = true
-      // addPurchaseCollection({ comment: this.purchases.comment }).then(res => {
+      // addPurchaseCollection({ comment: this.order.comment }).then(res => {
 
-      addPurchaseCollection(this.purchases).then(res => {
+      addPurchaseCollection(this.order).then(res => {
         let { data } = res
         console.log(res)
 

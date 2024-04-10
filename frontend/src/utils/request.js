@@ -18,10 +18,16 @@ import Strapi from 'strapi-sdk-js'
 
 // console.log(process.env.VUE_APP_STRAPI_URL)
 const strapi = new Strapi({
-  url: process.env.VUE_APP_STRAPI_URL
+  url: process.env.VUE_APP_STRAPI_URL,
+  store: {
+    key: "strapi_jwt",
+    useLocalStorage: true,
+    cookieOptions: { path: "/" },
+  },
 })
 
-strapi.axios.interceptors.response.use(response => {
+strapi.axios.interceptors.response.use(
+  response => {
     // if the custom code is not 20000, it is judged as an error.
     return response
   },
@@ -44,8 +50,8 @@ strapi.axios.interceptors.response.use(response => {
       })
     }
 
-    return Promise.reject(error)
-  })
+  return Promise.reject(error)
+})
 
 // request interceptor
 // service.interceptors.request.use(

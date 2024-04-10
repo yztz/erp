@@ -403,9 +403,12 @@ export interface PluginUploadFile extends Schema.CollectionType {
     folderPath: Attribute.String &
       Attribute.Required &
       Attribute.Private &
-      Attribute.SetMinMax<{
-        min: 1;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -441,9 +444,12 @@ export interface PluginUploadFolder extends Schema.CollectionType {
   attributes: {
     name: Attribute.String &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 1;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     pathId: Attribute.Integer & Attribute.Required & Attribute.Unique;
     parent: Attribute.Relation<
       'plugin::upload.folder',
@@ -462,9 +468,12 @@ export interface PluginUploadFolder extends Schema.CollectionType {
     >;
     path: Attribute.String &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 1;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -503,6 +512,12 @@ export interface PluginContentReleasesRelease extends Schema.CollectionType {
   attributes: {
     name: Attribute.String & Attribute.Required;
     releasedAt: Attribute.DateTime;
+    scheduledAt: Attribute.DateTime;
+    timezone: Attribute.String;
+    status: Attribute.Enumeration<
+      ['ready', 'blocked', 'failed', 'done', 'empty']
+    > &
+      Attribute.Required;
     actions: Attribute.Relation<
       'plugin::content-releases.release',
       'oneToMany',
@@ -551,11 +566,13 @@ export interface PluginContentReleasesReleaseAction
       'morphToOne'
     >;
     contentType: Attribute.String & Attribute.Required;
+    locale: Attribute.String;
     release: Attribute.Relation<
       'plugin::content-releases.release-action',
       'manyToOne',
       'plugin::content-releases.release'
     >;
+    isEntryValid: Attribute.Boolean;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -595,10 +612,13 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String &
-      Attribute.SetMinMax<{
-        min: 1;
-        max: 50;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 50;
+        },
+        number
+      >;
     code: Attribute.String & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -792,14 +812,20 @@ export interface ApiGoodGood extends Schema.CollectionType {
     deleted: Attribute.Boolean & Attribute.DefaultTo<false>;
     purchase_price: Attribute.Decimal &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 0;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     sale_price: Attribute.Decimal &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 0;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::good.good', 'oneToOne', 'admin::user'> &
@@ -921,6 +947,63 @@ export interface ApiPurchaseCollectionPurchaseCollection
   };
 }
 
+export interface ApiSaleSale extends Schema.CollectionType {
+  collectionName: 'sales';
+  info: {
+    singularName: 'sale';
+    pluralName: 'sales';
+    displayName: 'Sale';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    good: Attribute.Relation<'api::sale.sale', 'oneToOne', 'api::good.good'>;
+    sale_collection: Attribute.Relation<
+      'api::sale.sale',
+      'oneToOne',
+      'api::sale-collection.sale-collection'
+    >;
+    amount: Attribute.Integer & Attribute.Required;
+    size: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::sale.sale', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::sale.sale', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSaleCollectionSaleCollection extends Schema.CollectionType {
+  collectionName: 'sale_collections';
+  info: {
+    singularName: 'sale-collection';
+    pluralName: 'sale-collections';
+    displayName: 'SaleCollection';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    comment: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::sale-collection.sale-collection',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::sale-collection.sale-collection',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiStockStock extends Schema.CollectionType {
   collectionName: 'stocks';
   info: {
@@ -979,6 +1062,8 @@ declare module '@strapi/types' {
       'api::provider.provider': ApiProviderProvider;
       'api::purchase.purchase': ApiPurchasePurchase;
       'api::purchase-collection.purchase-collection': ApiPurchaseCollectionPurchaseCollection;
+      'api::sale.sale': ApiSaleSale;
+      'api::sale-collection.sale-collection': ApiSaleCollectionSaleCollection;
       'api::stock.stock': ApiStockStock;
     }
   }

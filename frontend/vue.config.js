@@ -24,7 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: process.env.PUBLIC_PATH || '/',
   // outputDir: 'dist',
   outputDir: 'dist',
   assetsDir: '',
@@ -45,6 +45,9 @@ module.exports = {
         target: "http://localhost:8082"
       },
       '/api/upload': {
+        target: "http://localhost:8082"
+      },
+      '/socket.io':{
         target: "http://localhost:8082"
       }
     }

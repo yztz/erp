@@ -8,13 +8,13 @@
     title="新建库存"
   >
 
-    <goods-selector button-title="提交" ref="form" @submit="add"/>
+    <goods-selector button-title="提  交" ref="form" @submit="add"/>
 
   </el-dialog>
 </template>
 
 <script>
-import GoodsSelector from '@/views/purchase/goodsSelector'
+import GoodsSelector from '@/components/GoodSelector'
 import { addStock } from '@/api/stock'
 
 const MODE_NEW = 0
@@ -67,13 +67,13 @@ export default {
         this.$message.error(this.loadingFail)
       })
     },
-    show(goods) {
+    show() {
       // console.log(goods)
       // this.purchases = this.getDefaultPurchases()
-      this.mode = goods ? MODE_EDIT : MODE_NEW
+      // this.mode = goods ? MODE_EDIT : MODE_NEW
       this.visible = true
       this.$nextTick(() => {
-        this.$refs.form.renew(goods)
+        this.$refs.form.renew()
       })
     },
 

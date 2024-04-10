@@ -9,6 +9,10 @@
       生成5个商品
     </el-button>
 
+    <el-button @click="genGoods(100)">
+      生成100个商品
+    </el-button>
+
     <el-button @click="genStock(5)">
       生成5个库存
     </el-button>

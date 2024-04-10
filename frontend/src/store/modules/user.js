@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import socket from '@/socket'
 
 const getDefaultState = () => {
   return {
@@ -34,7 +35,7 @@ const actions = {
   async getInfo({ commit, state }) {
     let info = await getInfo()
     if (!info) {
-      throw new Error('Verification failed, please Login again.')
+      throw new Error('身份验证失败，请重新登录')
     }
     // console.log("username ", username)
     // console.log(info)
@@ -45,6 +46,7 @@ const actions = {
   logout({ commit }) {
     removeToken() // must remove  token  first
     resetRouter()
+    socket.disconnect()
     commit('RESET_STATE')
   },
 

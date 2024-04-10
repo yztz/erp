@@ -33,7 +33,6 @@
         @selection-change="handleSelectionChange"
         class="table"
         row-key="id"
-        :border="true"
         :stripe="true"
         :data="goods"
       >
@@ -53,7 +52,6 @@
 
         <el-table-column align="center" prop="provider.name" label="供应商"/>
 
-
         <el-table-column align="center" width="200" label="颜色">
           <template v-slot="scope">
             <span v-html="formatter(scope.row.color)"/>
@@ -71,7 +69,7 @@
               fit="contain"
               style="width: 100px; height: 100px"
               :src="scope.row.picture.url"
-              :preview-src-list="[scope.row.picture.formats.large.url]"
+              :preview-src-list="[scope.row.picture.url]"
             />
             <span v-else>无</span>
           </template>
@@ -84,17 +82,11 @@
           <template v-slot="scope">{{ scope.row.comment ? scope.row.comment : '-' }}</template>
         </el-table-column>
 
-        <el-table-column align="center" fixed="right" label="操作">
+        <el-table-column align="center"  label="操作">
           <template v-slot="scope">
-            <el-button
-              @click="openEditor(scope.row)"
-              type="primary"
-              size="small"
-            >编辑
-            </el-button>
-            <el-button @click="deleteGood(scope.row)" type="danger" size="small"
-            >删除
-            </el-button>
+            <el-button @click="openEditor(scope.row)" type="primary" size="small">编辑</el-button>
+            <el-button @click="openExporter(scope.row)" type="success" size="small">导出</el-button>
+            <el-button @click="deleteGood(scope.row)" type="danger" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -119,11 +111,13 @@ import { queryAll, del, update, add } from '@/api/goods'
 import goodsEditor from '@/views/goods/goodsEditor'
 import { brightenKeyword } from '@/utils'
 import searcher from '@/components/Searcher'
+import SvgIcon from '@/components/SvgIcon'
+
 
 export default {
   name: 'index',
   components: {
-    pageSizeSelector, goodsEditor, searcher
+    pageSizeSelector, goodsEditor, searcher, SvgIcon
   },
 
   data() {
@@ -155,6 +149,9 @@ export default {
   },
 
   methods: {
+    openExporter(good) {
+
+    },
     search(value) {
       this.searchText = value
       this.pageIndex = 1
@@ -221,7 +218,7 @@ export default {
             { comment: { $containsi: searchText } }
           ]
         }
-        if (id !== Number.NaN) { // 数字
+        if (!Number.isNaN(id)) { // 数字
           filters.$or.push({ id: { $eq: id } })
         }
         return filters

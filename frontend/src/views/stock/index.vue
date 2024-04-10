@@ -1,6 +1,6 @@
 <template>
   <div class="stock-container">
-
+    <barcode ref="barcode" />
     <stock-creator ref="creator" @close="delayLoad"/>
     <div class="global-container">
       <el-button
@@ -15,6 +15,8 @@
       <el-button @click="openCreator" type="primary" class="add-new"
       >新建库存
       </el-button>
+
+      <searcher @search="search" :disable="!!currentItem"/>
       <!--      <transition name="el-fade-in">-->
       <!--        <el-button-->
       <!--          @click="deleteSelections"-->
@@ -27,32 +29,43 @@
       <!--      </transition>-->
     </div>
     <div class="table-container">
+        <!-- :cell-class-name="tableRowClassName" -->
       <el-table
         v-loading="loading"
         ref="table"
         class="table"
         row-key="id"
-        :border="true"
         :stripe="true"
         :data="stockData"
       >
         <el-table-column prop="id" label="ID"/>
-        <!--          <el-table-column label="创建时间">-->
-        <!--            <template v-slot="scope">-->
-        <!--              &lt;!&ndash;            <i class="el-icon-time"></i>&ndash;&gt;-->
-        <!--              <span style="margin-left: 10px">{{ scope.row.createdAt | formatTime }}</span>-->
-        <!--            </template>-->
-        <!--          </el-table-column>-->
-        <el-table-column prop="good.code" label="货号"/>
-        <el-table-column prop="good.provider.name" label="供应商"/>
-        <el-table-column prop="size" label="尺寸"/>
-        <el-table-column label="数量">
+        <el-table-column label="货号">
           <template v-slot="scope">
-            <el-input-number :min="0" v-model="currentItem.amount" size="small"
-                             v-if="currentItem && currentItem.id === scope.row.id"
-            >{{ scope.row.amount }}
-            </el-input-number>
-            <span v-else>{{ scope.row.amount }}</span>
+            <span v-html="formatter(scope.row.good.code)"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="颜色">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.good.color)"/>
+          </template>
+        </el-table-column>
+        
+        <el-table-column prop="good.provider.name" label="供应商">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.good.provider.name)"/>
+          </template>
+        </el-table-column>
+        <el-table-column  label="尺寸">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.size)"/>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column prop="amount" label="数量" :filters="[{ text: '欠货', value: 0 }, { text: '缺货', value: 1 }, { text: '有货', value: 2 }]" :filter-method="filterAmount"> -->
+        <el-table-column prop="amount" label="数量">
+          <template v-slot="scope">
+            <el-input-number v-model="currentItem.amount" size="small"
+                             v-if="currentItem && currentItem.id === scope.row.id"/>
+            <span v-else :class="{'red-text': scope.row.amount < 0}" v-html="formatter(scope.row.amount)"/>
           </template>
         </el-table-column>
 
@@ -80,6 +93,12 @@
               >编辑
               </el-button>
               <el-button
+                @click="showBarcode(scope.row)"
+                type="success"
+                size="small"
+              >条码
+              </el-button>
+              <el-button
                 @click="deleteStock(scope.row)"
                 type="danger"
                 size="small"
@@ -105,13 +124,15 @@
 
 <script>
 import { delStock, queryAllStocks, updateStock } from '@/api/stock'
-import { delPurchaseCollection } from '@/api/purchase'
 import StockCreator from '@/views/stock/stockCreator'
+import { brightenKeyword } from '@/utils'
 import pageSizeSelector from '@/components/PageSizeSelector'
+import Barcode from './barcode.vue'
+import searcher from '@/components/Searcher'
 
 export default {
   name: 'index',
-  components: { StockCreator, pageSizeSelector },
+  components: { StockCreator, pageSizeSelector, Barcode, searcher },
   data() {
     return {
       loading: false,
@@ -121,7 +142,9 @@ export default {
 
       pageIndex: 1,
       totalPage: 0,
-      pageSize: 15
+      pageSize: 15,
+      searchText: "",
+      currentHighlight: "",
     }
   },
 
@@ -129,6 +152,22 @@ export default {
     this.load()
   },
   methods: {
+    filterAmount(value, row, column) {
+      switch(value) {
+        case 0:
+          return row.amount < 0
+        case 1:
+          return row.amount == 0
+        case 2:
+          return row.amount > 0
+      }
+    },
+    tableRowClassName({row,column,rowIndex}) {
+      return row.amount < 0 ? 'row-owe' : ''
+    },
+    formatter(value) {
+      return brightenKeyword(value, this.currentHighlight)
+    },
     cancelEditor() {
       this.originItem = null
       this.currentItem = null
@@ -151,6 +190,10 @@ export default {
       }
     },
 
+    showBarcode(item) {
+      this.$refs.barcode.show(item)
+    },
+
     saveEditor() {
       if (this.currentItem.amount === this.originItem.amount) {
         this.cancelEditor()
@@ -170,19 +213,70 @@ export default {
     openCreator() {
       this.$refs.creator.show()
     },
+
+    search(value) {
+      this.searchText = value
+      this.pageIndex = 1
+      this.delayLoad()
+    },
+
     delayLoad() {
       this.loading = true
       setTimeout(this.__load, 500)
     },
+
+    getFilters() {
+      let searchText = this.searchText
+      if (searchText === '') {
+        return undefined
+      } else {
+        // console.log(searchText);
+        let amount = Number.parseInt(searchText)
+        let filters = {
+          $or: [
+            {
+              good: {
+                $or: [
+                  {code: { $containsi: searchText }},
+                  {color: { $containsi: searchText}},
+                  {
+                    provider: {
+                      name: {$containsi: searchText}
+                    }
+                  },
+                ]
+              } 
+            },
+            { size: { $containsi: searchText } },
+          ]
+        }
+        if (!Number.isNaN(amount)) { // 数字
+          console.log("amount:", amount);
+          filters.$or.push({ amount: { $eq: amount } })
+        }
+        return filters
+      }
+    },
+
     __load() {
-      queryAllStocks().then(res => {
+      let page = this.pageIndex
+      let pageSize = this.pageSize
+      let filters = this.getFilters()
+      queryAllStocks({
+        populate: 'good.provider',
+        filters,
+        pagination: { page, pageSize },
+      }).then(res => {
         let { data, meta: { pagination } } = res
         // console.log(pagination)
         this.totalPage = pagination.pageCount
         this.pageIndex = pagination.page
+        this.currentHighlight = this.searchText
 
         this.stockData = data
         this.loading = false
+      }).catch((err) => {
+        this.$message.error('查询失败')
       })
     },
     load() {
@@ -236,5 +330,16 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.red-text {
+  color: red;
+}
+
+::v-deep .el-table .row-owe {
+  background-color: #f8c3c3a7 !important;
+  // .el-table__cell {
+  //   background-color: #f8c3c3a7 !important;
+  // }
 }
 </style>

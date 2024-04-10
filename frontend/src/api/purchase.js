@@ -6,6 +6,12 @@ export async function queryAllPurchaseCollections(params) {
   return { data, meta }
 }
 
+export async function queryPurchases(params) {
+  return await strapi.find('purchases', {
+    ...params
+  })
+}
+
 export async function queryPurchaseFromID(id, params) {
   let { data, meta } = await strapi.find('purchases', {
     // fields: ["purchases"],
@@ -18,7 +24,7 @@ export async function queryPurchaseFromID(id, params) {
     },
     populate: {
       good: {
-        fields: ['code'],
+        fields: ['code', 'color'],
         populate: {
           provider: {
             fields: ['name']

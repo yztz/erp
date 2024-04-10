@@ -32,9 +32,9 @@
         row-key="id"
         v-loading="loading"
         :data="purchases"
-        border
       >
         <el-table-column align="center" prop="good.code" label="货号"/>
+        <el-table-column align="center" prop="good.color" label="颜色"/>
         <el-table-column align="center" prop="good.provider.name" label="供应商"/>
         <el-table-column align="center" prop="size" label="尺寸"/>
         <el-table-column align="center" prop="amount" label="数量"/>
