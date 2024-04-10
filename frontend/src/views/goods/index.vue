@@ -82,7 +82,7 @@
           <template v-slot="scope">{{ scope.row.comment ? scope.row.comment : '-' }}</template>
         </el-table-column>
 
-        <el-table-column align="center"  label="操作">
+        <el-table-column align="center" label="操作">
           <template v-slot="scope">
             <el-button @click="openEditor(scope.row)" type="primary" size="small">编辑</el-button>
             <el-button @click="openExporter(scope.row)" type="success" size="small">导出</el-button>
@@ -109,10 +109,12 @@
 import pageSizeSelector from '@/components/PageSizeSelector'
 import { queryAll, del, update, add } from '@/api/goods'
 import goodsEditor from '@/views/goods/goodsEditor'
-import { brightenKeyword } from '@/utils'
+import { brightenKeyword, parseSizes } from '@/utils'
 import searcher from '@/components/Searcher'
 import SvgIcon from '@/components/SvgIcon'
-
+import {  generateQRURL } from '@/utils/qrcode'
+import { saveAs } from 'file-saver';
+var JSZip = require('jszip')
 
 export default {
   name: 'index',
@@ -150,6 +152,52 @@ export default {
 
   methods: {
     openExporter(good) {
+      this.$prompt('请输入尺码:', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPlaceholder: '例如 S,M,L 或 35-45',
+        inputPattern: /^(([3-4][0-9])-([3-4][0-9])|(S|M|L|XL|XXL|[3-4][0-9])(,(S|M|L|XL|XXL|[3-4][0-9]))*)$/,
+        inputErrorMessage: '格式错误',
+        beforeClose: async(action, instance, done) => {
+          if (action === 'confirm') {
+            // console.log(instance.inputValue)
+            let sizes = parseSizes(instance.inputValue)
+            if (sizes == null || sizes === 0) {
+              this.$message({
+                type: 'info',
+                message: '无输入'
+              })
+              done()
+              return
+            }
+            instance.confirmButtonLoading = true
+            instance.confirmButtonText = '生成中...'
+
+            let zip = new JSZip()
+            try {
+              for (let size of sizes) {
+                let url = await generateQRURL({ good, size })
+                let base64Data = url.split(',')[1]
+                zip.file(`${good.code}-${good.color}-${size}.png`,
+                  base64Data, { base64: true })
+              }
+              zip.generateAsync({ type: 'blob' })
+                .then(function(blob) {
+                  saveAs(blob, `${good.code}-${good.color}.zip`);
+                  instance.confirmButtonLoading = false
+                  done()
+                })
+            } catch (e) {
+              console.log(e)
+              done()
+            }
+          } else {
+            done()
+          }
+        }
+      }).catch(e=>{
+        this.$message("已取消")
+      })
 
     },
     search(value) {
@@ -265,5 +313,14 @@ export default {
   padding: 20px;
 }
 
+.icon {
+  color: black;
+  font-size: 1rem;
+  text-align: center;
+}
+
+button {
+  text-align: center;
+}
 
 </style>

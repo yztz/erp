@@ -135,3 +135,33 @@ export function brightenKeyword(val, keyword) {
     return val
   }
 }
+
+export function parseSizes(sizes) {
+  // 正则表达式用于验证逗号分隔的尺码（例如 "S,M,L"）和范围的尺码（例如 "35-48"）
+  const commaSeparated = /^[a-zA-Z](,[a-zA-Z])*$/g;
+  const range = /^\d+-\d+$/g;
+
+  // 如果是逗号分隔的尺码
+  if (commaSeparated.test(sizes)) {
+    return sizes.split(',');
+  }
+  // 如果是范围的尺码
+  else if (range.test(sizes)) {
+    const rangeElements = sizes.split('-');
+    const start = Number(rangeElements[0]);
+    const end = Number(rangeElements[1]);
+    if (start > end) {
+      return null;
+    }
+    const result = [];
+    for (let i = start; i <= end; i++) {
+      result.push(i.toString());
+    }
+    return result;
+  }
+  // 如果尺码信息不符合任何已知的格式
+  else {
+    return null;
+  }
+}
+

@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -42,21 +43,24 @@ module.exports = {
     },
     proxy: {
       '/uploads': {
-        target: "http://localhost:8082"
+        target: "http://localhost:8088"
       },
       '/api/upload': {
-        target: "http://localhost:8082"
+        target: "http://localhost:8088"
       },
-      '/socket.io':{
-        target: "http://localhost:8082"
-      }
+      // '/socket.io':{
+      //   target: "http://localhost:8088"
+      // }
     }
-    // before: require('./mock/mock-server.js')
+
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
+    plugins: [
+      new BundleAnalyzerPlugin()
+    ],
     resolve: {
       alias: {
         '@': resolve('src'),

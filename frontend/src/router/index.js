@@ -123,17 +123,17 @@ export const constantRoutes = [
       meta: {title: '条码生成', icon: 'el-icon-s-ticket'},
     }],
   },
-  {
-    path: '/fake',
-    component: Layout,
-
-    children: [{
-      path: 'index',
-      name: "Fake",
-      component: () => import('@/views/fake/index'),
-      meta: {title: '测试数据生成', icon: 'el-icon-receiving'},
-    }],
-  },
+  // {
+  //   path: '/fake',
+  //   component: Layout,
+  //
+  //   children: [{
+  //     path: 'index',
+  //     name: "Fake",
+  //     component: () => import('@/views/fake/index'),
+  //     meta: {title: '测试数据生成', icon: 'el-icon-receiving'},
+  //   }],
+  // },
   // {
   //   path: '/example',
   //   component: Layout,

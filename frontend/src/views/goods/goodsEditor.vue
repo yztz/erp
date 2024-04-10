@@ -22,13 +22,13 @@
 
       <el-row type="flex" justify="space-between" :gutter="20">
         <el-col :span="12">
-          <el-form-item prop="color" label="成本价">
+          <el-form-item prop="purchase_price" label="成本价">
             <el-input type="number" v-model="goods.purchase_price" autocomplete="off"></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
-          <el-form-item prop="color" label="销售价">
+          <el-form-item prop="sale_price" label="销售价">
             <el-input type="number" v-model="goods.sale_price" autocomplete="off"></el-input>
           </el-form-item>
         </el-col>
@@ -132,7 +132,9 @@ export default {
         color: '',
         comment: '',
         provider: { id: null, name: null },
-        picture: null
+        picture: null,
+        sale_price: '',
+        purchase_price: '',
       },
       providers: [],
       rules: {
