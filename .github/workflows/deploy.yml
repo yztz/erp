@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -20,4 +21,4 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ubuntu
         key: ${{ secrets.REMOTE_KEY }}
-        script: "cd /home/ubuntu/erp && bash deploy.sh"
+        script: "cd /home/ubuntu && bash deploy.sh"
