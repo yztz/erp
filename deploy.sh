@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source /home/ubuntu/.bashrc
 tmux kill-session -t wms
 git fetch --all
 git reset --hard origin/master
