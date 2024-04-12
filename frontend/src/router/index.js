@@ -87,7 +87,7 @@ export const constantRoutes = [
       path: 'index',
       name: "Purchase",
       component: () => import('@/views/purchase/index'),
-      meta: {title: '进货', icon: 'el-icon-receiving'},
+      meta: {title: '进货单', icon: 'el-icon-receiving'},
     }],
   },
   {
@@ -98,7 +98,7 @@ export const constantRoutes = [
       path: 'index',
       name: "Sale",
       component: () => import('@/views/sale/index'),
-      meta: {title: '出货', icon: 'el-icon-shopping-cart-2'},
+      meta: {title: '出货单', icon: 'el-icon-shopping-cart-2'},
     }],
   },
   {
@@ -123,17 +123,17 @@ export const constantRoutes = [
       meta: {title: '条码生成', icon: 'el-icon-s-ticket'},
     }],
   },
-  // {
-  //   path: '/fake',
-  //   component: Layout,
-  //
-  //   children: [{
-  //     path: 'index',
-  //     name: "Fake",
-  //     component: () => import('@/views/fake/index'),
-  //     meta: {title: '测试数据生成', icon: 'el-icon-receiving'},
-  //   }],
-  // },
+  {
+    path: '/fake',
+    component: Layout,
+
+    children: [{
+      path: 'index',
+      name: "Fake",
+      component: () => import('@/views/fake/index'),
+      meta: {title: '测试数据生成', icon: 'el-icon-receiving'},
+    }],
+  },
   // {
   //   path: '/example',
   //   component: Layout,

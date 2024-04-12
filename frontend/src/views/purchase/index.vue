@@ -128,7 +128,9 @@ export default {
       })
     },
     __load() {
-      queryAllPurchaseCollections().then(res => {
+      queryAllPurchaseCollections({
+        sort: ['createdAt:desc']
+      }).then(res => {
         let { data, meta: { pagination } } = res
 
         this.totalPage = pagination.pageCount

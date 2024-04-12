@@ -36,15 +36,15 @@
         :stripe="true"
         :data="goods"
       >
-        <el-table-column label="选择" type="selection" width="55"/>
+        <el-table-column label="选择" type="selection" />
 
-        <el-table-column width="100" align="center" label="ID">
+        <el-table-column  align="center" :width="100" label="ID">
           <template v-slot="scope">
             <span v-html="formatter(scope.row.id)"/>
           </template>
         </el-table-column>
 
-        <el-table-column width="300" align="center" label="货号">
+        <el-table-column  align="center" label="货号">
           <template v-slot="scope">
             <span v-html="formatter(scope.row.code)"/>
           </template>
@@ -52,14 +52,14 @@
 
         <el-table-column align="center" prop="provider.name" label="供应商"/>
 
-        <el-table-column align="center" width="200" label="颜色">
+        <el-table-column align="center"  label="颜色">
           <template v-slot="scope">
             <span v-html="formatter(scope.row.color)"/>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" width="200" label="成本价" prop="purchase_price"></el-table-column>
-        <el-table-column align="center" width="200" label="销售价" prop="sale_price"></el-table-column>
+        <el-table-column align="center" label="成本价" prop="purchase_price"></el-table-column>
+        <el-table-column align="center" label="销售价" prop="sale_price"></el-table-column>
 
 
         <el-table-column align="center" label="图片">
@@ -84,9 +84,12 @@
 
         <el-table-column align="center" label="操作">
           <template v-slot="scope">
-            <el-button @click="openEditor(scope.row)" type="primary" size="small">编辑</el-button>
-            <el-button @click="openExporter(scope.row)" type="success" size="small">导出</el-button>
-            <el-button @click="deleteGood(scope.row)" type="danger" size="small">删除</el-button>
+            <div>
+              <el-button @click="openEditor(scope.row)" type="primary" size="small">编辑</el-button>
+              <el-button @click="openExporter(scope.row)" type="success" size="small">导出</el-button>
+              <el-button @click="deleteGood(scope.row)" type="danger" size="small">删除</el-button>
+            </div>
+
           </template>
         </el-table-column>
       </el-table>

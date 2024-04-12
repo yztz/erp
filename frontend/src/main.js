@@ -43,6 +43,36 @@ const SOCKETIO = new VueSocketIO({
 
 Vue.use(SOCKETIO)
 
+// echarts
+import * as echarts from 'echarts/core'
+import { BarChart, LinesChart, LineChart } from 'echarts/charts'
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  DatasetComponent,
+  TransformComponent,
+  LegendComponent,
+  DataZoomComponent,
+} from 'echarts/components'
+import { LabelLayout, UniversalTransition } from 'echarts/features'
+import { SVGRenderer } from 'echarts/renderers'
+
+echarts.use([
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  DatasetComponent,
+  TransformComponent,
+  BarChart,
+  LineChart,
+  LabelLayout,
+  UniversalTransition,
+  SVGRenderer,
+  LegendComponent,
+  DataZoomComponent
+])
+
 
 new Vue({
   el: '#app',
@@ -50,6 +80,7 @@ new Vue({
   store,
   beforeCreate(){
     Vue.prototype.$bus = this//安装全局事件总线
+    Vue.prototype.$echarts = echarts//安装全局事件总线
   },
   render: h => h(App)
 })

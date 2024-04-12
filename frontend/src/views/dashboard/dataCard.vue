@@ -10,13 +10,13 @@
 <script>
 
 export default {
-  name: "DateCard",
+  name: "DataCard",
   props: {
     title: String,
     value: Number
   },
 
-  
+
 
 };
 </script>

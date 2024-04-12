@@ -134,7 +134,7 @@ export default {
 
         const good = goods[faker.number.int({ min: 0, max: goods.length - 1 })].id
         const size = faker.number.float({ min: 35, max: 50, precision: 0.5 }) + ""
-        const amount = faker.number.int({ min: 1, max: 99999 })
+        const amount = faker.number.int({ min: -200, max: 500 })
 
         // 打印生成的供应商数据
         console.log(`库存 #${i}:`)

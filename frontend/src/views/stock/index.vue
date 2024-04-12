@@ -49,7 +49,7 @@
             <span v-html="formatter(scope.row.good.color)"/>
           </template>
         </el-table-column>
-        
+
         <el-table-column prop="good.provider.name" label="供应商">
           <template v-slot="scope">
             <span v-html="formatter(scope.row.good.provider.name)"/>
@@ -245,7 +245,7 @@ export default {
                     }
                   },
                 ]
-              } 
+              }
             },
             { size: { $containsi: searchText } },
           ]

@@ -1,15 +1,14 @@
-'use strict';
+'use strict'
 const assert = require('assert')
 const errors = require('@strapi/utils').errors
 /**
  * sale-collection service
  */
 
-const { createCoreService } = require('@strapi/strapi').factories;
+const { createCoreService } = require('@strapi/strapi').factories
 
 module.exports = createCoreService('api::sale-collection.sale-collection', ({ strapi }) => ({
   async create(params) {
-
 
     let { data } = params
     let { sales } = data
@@ -31,11 +30,14 @@ module.exports = createCoreService('api::sale-collection.sale-collection', ({ st
       size: el.size,
     }))
     for (let sale of sales) {
-      strapi.log.info('[sale-collection creating ' + JSON.stringify(sale))
-      let res = await strapi.service('api::sale.sale').create({
-        data: sale
-      })
-
+      strapi.log.info('[sale-collection] creating ' + JSON.stringify(sale))
+      try {
+        let res = await strapi.service('api::sale.sale').create({
+          data: sale,
+        })
+      } catch (e) {
+        strapi.log.info('[sale-collection] error: ' + e)
+      }
     }
 
     return entity
@@ -45,21 +47,21 @@ module.exports = createCoreService('api::sale-collection.sale-collection', ({ st
     const deletedSales = await strapi.entityService.findMany('api::sale.sale', {
       filters: {
         sale_collection: {
-          id: id
-        }
+          id: id,
+        },
       },
-      populate: 'sale_collection'
+      populate: 'sale_collection',
     })
     // 删除
     await Promise.all(
       deletedSales.map(({ id }) =>
         strapi.db.query('api::sale.sale').delete({
-          where: { id }
-        })
+          where: { id },
+        }),
       ))
     strapi.log.info(`[sale-collection] ${deletedSales.length} related items deleted`)
     // 删除自身
     return await super.delete(id, params)
-  }
+  },
 }))
 

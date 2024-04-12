@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('assert')
+const { errors } = require('@strapi/utils');
+const { ApplicationError } = errors;
 /**
  * purchase service
  */
@@ -10,6 +12,11 @@ const { createCoreService } = require('@strapi/strapi').factories;
 module.exports = createCoreService('api::purchase.purchase', ({ strapi }) => ({
   async create(params) {
     let { data: purchase } = params
+
+    // 先确保商品存在
+    let good = await strapi.entityService.findOne('api::good.good', purchase.good)
+    if (!good || good.deleted) throw new ApplicationError("商品不存在或已被删除");
+
     let entity = await super.create(params)
 
     if (purchase.sync) {

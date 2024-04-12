@@ -6,7 +6,7 @@
   "scripts": {
     "develop": "vue-cli-service serve --host 0.0.0.0",
     "build": "vue-cli-service build --mode production",
-    "deploy": "rm -rf ../backend/public/static/* && cp -r dist/* ../backend/public/static/",
+    "deploy": "rimraf ../backend/public/static/* && copyfiles -u 1 dist/* ../backend/public/static/",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
@@ -17,7 +17,9 @@
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
     "axios": "0.18.1",
+    "copyfiles": "^2.4.1",
     "core-js": "^3.33.0",
+    "echarts": "^5.5.0",
     "element-ui": "^2.15.14",
     "file-saver": "^2.0.5",
     "js-cookie": "2.2.0",

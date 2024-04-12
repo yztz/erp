@@ -7,7 +7,7 @@
         style="margin-left: 7px"
         type="text"
         icon="el-icon-refresh-right"
-        @click="conntectScanner"
+        @click="connectScanner"
         >重试</el-button
       >
     </p>
@@ -38,7 +38,7 @@ export default {
   },
 
   mounted() {
-    this.conntectScanner()
+    this.connectScanner()
   },
 
   methods: {
@@ -46,12 +46,12 @@ export default {
       let obj = JSON.parse(data)
       this.$bus.$emit('scan', obj)
     },
-    
+
     handleCommit() {
       this.$bus.$emit('commit')
     },
 
-    conntectScanner() {
+    connectScanner() {
       this.$socket.emit("barcode.discover");
     },
   }
