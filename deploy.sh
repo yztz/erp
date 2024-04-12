@@ -6,13 +6,16 @@ echo "===========环境变量=========="
 env
 echo "============================="
 
+export PATH=/home/ubuntu/.nvm/versions/node/v18.20.2/bin:$PATH
+
 # 无限循环
 while true; do
     echo "拉取仓库..."
     git fetch --all
+    ecode=$?
 
     # 检查是否成功
-    if [ $? -eq 0 ]; then
+    if [[ $ecode -eq 0 ]]; then
         echo "拉取成功"
         break
     else
