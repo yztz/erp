@@ -6,7 +6,8 @@
   "scripts": {
     "develop": "vue-cli-service serve --host 0.0.0.0",
     "build": "vue-cli-service build --mode production",
-    "deploy": "rimraf ../backend/public/static/* && copyfiles -u 1 dist/* ../backend/public/static/",
+    "deploy-windows": "rimraf ../backend/public/static/* && robocopy dist ../backend/public/static /E /IS /IT",
+    "deploy-linux": "rm ../backend/public/static/* && cp -r dist/* ../backend/public/static/",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
@@ -17,7 +18,6 @@
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
     "axios": "0.18.1",
-    "copyfiles": "^2.4.1",
     "core-js": "^3.33.0",
     "echarts": "^5.5.0",
     "element-ui": "^2.15.14",
@@ -55,6 +55,7 @@
     "eslint": "6.7.2",
     "eslint-plugin-vue": "6.2.2",
     "html-webpack-plugin": "3.2.0",
+    "run-script-os": "^1.1.6",
     "runjs": "4.3.2",
     "sass": "1.26.8",
     "sass-loader": "8.0.2",

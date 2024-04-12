@@ -219,7 +219,16 @@ export default {
         series.push(news)
       }
       // console.log(series)
-      return {
+      return series.length === 0 ? {
+        title: {
+          text: '库存盘点\n\n暂无数据',
+          x: 'center',
+          y: 'center',
+          textStyle: {
+            fontSize: 28
+          }
+        }
+      } : {
         title: {
           text: '库存盘点',
           // textAlign: 'center',

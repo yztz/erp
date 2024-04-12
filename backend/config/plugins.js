@@ -19,13 +19,13 @@ module.exports = ({ env }) => ({
 						strapi.log.info(`[io] new connection with id ${socket.id}`);
             console.log(socket.rooms);
 					},
-				}, 
+				},
 				{
 					name: 'barcode.scan',
 					handler({ strapi, io }, socket, data) {
 						// will log whenever 'custom-event-name' is called by a socket
 						strapi.log.info(`[io] scan data = ${data}`);
-            io.server.emit('barcode.result', data) 
+            io.server.emit('barcode.result', data)
 					},
 				},
         {
@@ -33,7 +33,7 @@ module.exports = ({ env }) => ({
 					handler({ strapi, io }, socket) {
 						// will log whenever 'custom-event-name' is called by a socket
             strapi.log.info("[io] barcode discover");
-            io.server.emit('barcode.discover') 
+            io.server.emit('barcode.discover')
 					},
 				},
         {
@@ -41,16 +41,16 @@ module.exports = ({ env }) => ({
 					handler({ strapi, io }, socket) {
 						// will log whenever 'custom-event-name' is called by a socket
 						strapi.log.info(`[io] barcode found`);
-            io.server.emit('barcode.found') 
-					}, 
+            io.server.emit('barcode.found')
+					},
 				},
         {
           name: 'barcode.commit',
           handler({ strapi, io }, socket) {
 						// will log whenever 'custom-event-name' is called by a socket
 						strapi.log.info(`[io] barcode commit`);
-            io.server.emit('barcode.commit') 
-					}, 
+            io.server.emit('barcode.commit')
+					},
         }
 			],
     },
@@ -82,9 +82,9 @@ module.exports = ({ env }) => ({
         ids: {
           'slugify': true,
         },
-        
+
       },
-      
+
     }
   },
   // ..
