@@ -20,4 +20,4 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ubuntu
         key: ${{ secrets.REMOTE_KEY }}
-        script: "bash /home/ubuntu/erp/deploy.sh"
+        script: "cd /home/ubuntu/erp && bash deploy.sh"
