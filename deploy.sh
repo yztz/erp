@@ -38,4 +38,4 @@ yarn deploy-linux
 cd ../backend
 yarn
 yarn build
-tmux new -s session -d "NODE_ENV=production yarn start; bash"
+tmux new -s wms -d "NODE_ENV=production yarn start; bash"
