@@ -6,7 +6,7 @@ echo "===========环境变量=========="
 env
 echo "============================="
 
-export PATH=/home/ubuntu/.nvm/versions/node/v18.20.2/bin:$PATH
+export PATH=/home/ubuntu/.nvm/versions/node/v18.20.2/bin/yarn:$PATH
 
 # 无限循环
 while true; do
