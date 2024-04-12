@@ -7,7 +7,7 @@
     "develop": "vue-cli-service serve --host 0.0.0.0",
     "build": "vue-cli-service build --mode production",
     "deploy-windows": "rimraf ../backend/public/static/* && robocopy dist ../backend/public/static /E /IS /IT",
-    "deploy-linux": "rm ../backend/public/static/* && cp -r dist/* ../backend/public/static/",
+    "deploy-linux": "rm -r ../backend/public/static/* && cp -r dist/* ../backend/public/static/",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
