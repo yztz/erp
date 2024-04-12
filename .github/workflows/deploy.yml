@@ -16,8 +16,11 @@ jobs:
 
     - name: Execute remote script
       uses: appleboy/ssh-action@master
+      env:
+        HOME: /home/ubuntu
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ubuntu
+        envs: HOME
         key: ${{ secrets.REMOTE_KEY }}
-        script: "cd /home/ubuntu/erp && bash deploy.sh"
+        script: "cd $HOME/erp && bash deploy.sh"

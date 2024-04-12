@@ -2,9 +2,9 @@
 
 # 设置重试间隔时间
 retry_interval=3  # seconds
-
-source /home/ubuntu/.bashrc
-tmux kill-session -t wms
+echo "===========环境变量=========="
+env
+echo "============================="
 
 # 无限循环
 while true; do
@@ -22,6 +22,9 @@ while true; do
 done
 
 git reset --hard origin/master
+
+source /home/ubuntu/.bashrc
+tmux kill-session -t wms
 
 # 前端
 cd frontend
