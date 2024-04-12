@@ -2,11 +2,6 @@
 
 # 设置重试间隔时间
 retry_interval=3  # seconds
-echo "===========环境变量=========="
-env
-echo "============================="
-
-export PATH=/home/ubuntu/.nvm/versions/node/v18.20.2/bin/yarn:$PATH
 
 # 无限循环
 while true; do
@@ -27,6 +22,14 @@ done
 git reset --hard origin/master
 
 source /home/ubuntu/.bashrc
+
+export PATH="/home/ubuntu/.nvm/versions/node/v18.20.2/bin:$PATH"
+
+echo "===========环境变量=========="
+env
+echo "============================="
+
+
 tmux kill-session -t wms
 
 # 前端
