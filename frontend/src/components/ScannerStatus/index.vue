@@ -19,14 +19,17 @@ export default {
   name: "ScannerStatus",
   sockets: {
     "barcode.result": function (data) {
+      console.log(`[io] scan result: ${data}`)
       this.scanner = true
       this.handleScan(data)
     },
     "barcode.commit": function () {
+      console.log(`[io] commit`)
       this.scanner = true
       this.handleCommit()
     },
     "barcode.found": function () {
+      console.log(`[io] found`)
       this.$message.success("扫码器连接成功");
       this.scanner = true;
     },
