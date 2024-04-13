@@ -17,9 +17,13 @@
         </el-row>
 
         <el-row>
-          <el-card id="warning-panel" shadow="always" style="padding: 10px" body-style="display: flex; flex-direction: column">
+          <el-card id="warning-panel" shadow="always" style="padding: 10px"
+                   body-style="display: flex; flex-direction: column"
+          >
             <el-button id="thresh-btn" type="text" @click="setWarnThresh">设置告警阈值</el-button>
-            <span style="font-size: 18px; font-family: 'Microsoft YaHei',serif; font-weight: bold; align-self: center; margin: 10px 0 20px 0">库存告警</span>
+            <span
+              style="font-size: 18px; font-family: 'Microsoft YaHei',serif; font-weight: bold; align-self: center; margin: 10px 0 20px 0"
+            >库存告警</span>
             <el-table
               :max-height="700"
               :data="lowStock"
@@ -28,19 +32,23 @@
               <el-table-column
                 align="center"
                 prop="good.code"
-                label="货号"/>
+                label="货号"
+              />
               <el-table-column
                 align="center"
                 prop="good.color"
-                label="颜色"/>
+                label="颜色"
+              />
               <el-table-column
                 align="center"
                 prop="size"
-                label="尺码"/>
+                label="尺码"
+              />
               <el-table-column
                 align="center"
                 prop="amount"
-                label="数量"/>
+                label="数量"
+              />
             </el-table>
           </el-card>
         </el-row>
@@ -89,8 +97,9 @@ export default {
 
   computed: {
     ...mapGetters(['name']),
+
     lowStock() {
-      return this.stocks.filter(item=>item.amount <= this.stockThreshold)
+      return this.stocks.filter(item => item.amount <= this.stockThreshold).sort((a, b) => (a.amount - b.amount))
     },
     stockCount() {
       let ans = 0
@@ -376,27 +385,27 @@ export default {
 
   methods: {
     getWarnThresh() {
-      this.stockThreshold = Number.parseInt(localStorage.getItem("stockThreshold") || 50)
+      this.stockThreshold = Number.parseInt(localStorage.getItem('stockThreshold') || 50)
     },
     setWarnThresh() {
       this.$prompt('请输入新的告警阈值', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPattern: /^-?[0-9]+$/,
-        inputErrorMessage: '数字不正确'
+        inputErrorMessage: '数字不正确',
       }).then(({ value }) => {
-        localStorage.setItem("stockThreshold", value)
+        localStorage.setItem('stockThreshold', value)
         this.getWarnThresh()
         this.$message({
           type: 'success',
-          message: '设置成功'
-        });
+          message: '设置成功',
+        })
       }).catch(() => {
         // this.$message({
         //   type: 'info',
         //   message: '取消'
         // });
-      });
+      })
     },
     mapDateData(ps, days = 7) {
       // 将数据按照日期进行归类，并按日期升序

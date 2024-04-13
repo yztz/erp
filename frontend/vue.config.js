@@ -3,6 +3,35 @@ const path = require('path')
 const defaultSettings = require('./src/settings.js')
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
+//定义一个变量，里面用于存储忽略掉的包
+let externals={}
+
+//定义一个变量，里面存储cdn引入的路径
+let cdn={
+  js:[]
+}
+
+//判断是否是生产环境，是的话，开始填入忽略包的名字，cdn路径的引入
+// if(process.env.ENV==="production"){
+  externals={
+    "vue":"Vue",
+    "element-ui":"ELEMENT",
+    "moment": "moment",
+    'echarts': 'echarts',
+  }
+  //cdn路径可以到BootCDN去找对应版本的地址
+  cdn={
+    js:[
+      'https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.js', // vuejs
+      'https://unpkg.com/element-ui/lib/index.js', // element
+      'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js',
+      'https://unpkg.com/browse/echarts@5.5.0/dist/echarts.min.js',
+    ]
+  }
+// }
+
+
+
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -66,9 +95,14 @@ module.exports = {
         '@': resolve('src'),
       },
       extensions: ['*', '.mjs', '.js', '.vue', '.json']
-    }
+    },
+    externals
   },
   chainWebpack(config) {
+    config.plugin('html').tap(args => {
+      args[0].cdn = cdn
+      return args
+    })
     config.module // fixes https://github.com/graphql/graphql-js/issues/1272
       .rule('mjs$')
       .test(/\.mjs$/)

@@ -2,7 +2,7 @@
     <el-card shadow="always">
         <div class="card-wrapper">
             <span class="title">{{title}}</span>
-            <span class="value" style="margin-left: 30px;">{{value}}</span>
+            <span class="value">{{value}}</span>
             </div>
     </el-card>
 </template>
@@ -25,10 +25,15 @@ export default {
 
 .card-wrapper {
   height: 100%;
+  width: 75%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   font-size: 30px;
+}
+
+.el-card {
   min-width: 250px;
 }
 
@@ -37,9 +42,10 @@ export default {
 }
 
 
-
 ::v-deep .el-card__body {
   padding: 0;
-  height: 200px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
 }
 </style>
