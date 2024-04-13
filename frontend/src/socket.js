@@ -1,7 +1,6 @@
 import SocketIO from 'socket.io-client'
 
 const io = SocketIO(process.env.VUE_APP_BASE_API, {
-  path: '/api/socket.io/',
   autoConnect: false,
 })
 
