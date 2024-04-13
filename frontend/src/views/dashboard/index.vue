@@ -15,16 +15,46 @@
             <data-card title="今日出库" :value="amountSaleToday"/>
           </el-col>
         </el-row>
+
         <el-row>
-          <el-card shadow="always">
-            <div class="chart" id="purchase-and-sale"></div>
+          <el-card id="warning-panel" shadow="always" style="padding: 10px" body-style="display: flex; flex-direction: column">
+            <el-button id="thresh-btn" type="text" @click="setWarnThresh">设置告警阈值</el-button>
+            <span style="font-size: 18px; font-family: 'Microsoft YaHei',serif; font-weight: bold; align-self: center; margin: 10px 0 20px 0">库存告警</span>
+            <el-table
+              :max-height="700"
+              :data="lowStock"
+              style="width: 100%"
+            >
+              <el-table-column
+                align="center"
+                prop="good.code"
+                label="货号"/>
+              <el-table-column
+                align="center"
+                prop="good.color"
+                label="颜色"/>
+              <el-table-column
+                align="center"
+                prop="size"
+                label="尺码"/>
+              <el-table-column
+                align="center"
+                prop="amount"
+                label="数量"/>
+            </el-table>
           </el-card>
         </el-row>
+
       </el-col>
       <el-col class="sect" :span="12">
         <el-row>
           <el-card shadow="always">
             <div class="chart" style="height: 620px" id="stock-detail"></div>
+          </el-card>
+        </el-row>
+        <el-row>
+          <el-card shadow="always">
+            <div class="chart" id="purchase-and-sale"></div>
           </el-card>
         </el-row>
       </el-col>
@@ -57,10 +87,11 @@ export default {
   components: { DataCard },
   name: 'Dashboard',
 
-  comments: [DataCard],
-
   computed: {
     ...mapGetters(['name']),
+    lowStock() {
+      return this.stocks.filter(item=>item.amount <= this.stockThreshold)
+    },
     stockCount() {
       let ans = 0
       this.stocks.forEach(item => {
@@ -93,6 +124,7 @@ export default {
     amountPurchase7() {
       return this.mapDateData(this.purchases7)
     },
+    // 分组聚合 {尺寸:{商品:{数量}}} {商品:数量} {商品ID:商品名称（货号+颜色）}
     stockGroupByGood() {
       let amounts = {}
       let titles = {}
@@ -112,7 +144,7 @@ export default {
 
       return { sizes, amounts, titles }
     },
-
+    // 商品按数量排序后的一一对应的数量数组、标题数组
     stockTitlesAndAmounts() {
       let { amounts: amountsObj, titles: titlesObj } = this.stockGroupByGood
       let amounts = []
@@ -130,68 +162,6 @@ export default {
       }
 
       return { ids: amounts.map(item => item[0]), amounts: amounts.map(item => item[1]), titles }
-    },
-    PSChartOption() {
-      let dates = []
-      for (let i = 6; i >= 0; i--) {
-        let date = moment().subtract(i, 'days').format('MM-DD')
-        dates.push(date)
-      }
-      return {
-        title: {
-          text: '近七日仓库出入库数量',
-          // textAlign: 'center',
-          // left: 'center',
-          padding: 20,
-          left: 'center',
-        },
-        grid: {
-          top: '20%',  // 调整这个值以改变标题和图表之间的间距
-        },
-        legend: {
-          orient: 'horizontal',
-          bottom: 10,
-          itemGap: 60,
-        },
-
-        tooltip: {
-          show: true,
-          trigger: 'axis', // "item" || "axis"
-          axisPointer: {
-            type: 'cross',
-            snap: true,
-            // label: {
-            //   backgroundColor: '#283b56'
-            // }
-          },
-        },
-        xAxis: {
-          axisTick: {
-            alignWithLabel: true,
-          },
-          name: '日期',
-          data: dates,
-        },
-        yAxis: {
-          type: 'value',
-          // name: '数量',
-        },
-        series: [
-          {
-            name: '入库',
-            data: this.amountPurchase7,
-            type: 'line',
-            areaStyle: {},
-          },
-
-          {
-            name: '出库',
-            data: this.amountSale7,
-            type: 'line',
-            areaStyle: {},
-          },
-        ],
-      }
     },
     stockChartOption() {
       let { sizes } = this.stockGroupByGood
@@ -225,9 +195,9 @@ export default {
           x: 'center',
           y: 'center',
           textStyle: {
-            fontSize: 28
-          }
-        }
+            fontSize: 28,
+          },
+        },
       } : {
         title: {
           text: '库存盘点',
@@ -315,7 +285,68 @@ export default {
         },
       }
     },
+    PSChartOption() {
+      let dates = []
+      for (let i = 6; i >= 0; i--) {
+        let date = moment().subtract(i, 'days').format('MM-DD')
+        dates.push(date)
+      }
+      return {
+        title: {
+          text: '近七日仓库出入库数量',
+          // textAlign: 'center',
+          // left: 'center',
+          padding: 20,
+          left: 'center',
+        },
+        grid: {
+          top: '20%',  // 调整这个值以改变标题和图表之间的间距
+        },
+        legend: {
+          orient: 'horizontal',
+          bottom: 10,
+          itemGap: 60,
+        },
 
+        tooltip: {
+          show: true,
+          trigger: 'axis', // "item" || "axis"
+          axisPointer: {
+            type: 'cross',
+            snap: true,
+            // label: {
+            //   backgroundColor: '#283b56'
+            // }
+          },
+        },
+        xAxis: {
+          axisTick: {
+            alignWithLabel: true,
+          },
+          name: '日期',
+          data: dates,
+        },
+        yAxis: {
+          type: 'value',
+          // name: '数量',
+        },
+        series: [
+          {
+            name: '入库',
+            data: this.amountPurchase7,
+            type: 'line',
+            areaStyle: {},
+          },
+
+          {
+            name: '出库',
+            data: this.amountSale7,
+            type: 'line',
+            areaStyle: {},
+          },
+        ],
+      }
+    },
   },
 
   data() {
@@ -324,10 +355,12 @@ export default {
       sales7: [],
       purchases7: [],
       charts: {},
+      stockThreshold: 50,
     }
   },
 
   mounted() {
+    this.getWarnThresh()
     this.createCharts()
     this.load().then(() => {
       this.$bus.$on('commit', () => {
@@ -342,6 +375,29 @@ export default {
   },
 
   methods: {
+    getWarnThresh() {
+      this.stockThreshold = Number.parseInt(localStorage.getItem("stockThreshold") || 50)
+    },
+    setWarnThresh() {
+      this.$prompt('请输入新的告警阈值', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^-?[0-9]+$/,
+        inputErrorMessage: '数字不正确'
+      }).then(({ value }) => {
+        localStorage.setItem("stockThreshold", value)
+        this.getWarnThresh()
+        this.$message({
+          type: 'success',
+          message: '设置成功'
+        });
+      }).catch(() => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '取消'
+        // });
+      });
+    },
     mapDateData(ps, days = 7) {
       // 将数据按照日期进行归类，并按日期升序
       let ans = new Array(days).fill(0)
@@ -452,6 +508,15 @@ export default {
   height: 400px;
 }
 
+#warning-panel {
+  position: relative;
+
+  #thresh-btn {
+    position: absolute;
+    right: 15px;
+    top: 0;
+  }
+}
 
 ::v-deep .el-card__body {
   padding: 0;
