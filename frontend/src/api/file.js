@@ -18,10 +18,10 @@ export function getPicture(fileName) {
 }
 
 export function getPictureURL(fileName) {
-  return process.env.VUE_APP_BASE_API + '/file/fetch/' + fileName
+  return process.env.VUE_APP_BASE_API + '/api/file/fetch/' + fileName
 }
 
 
 export function getUploadUrl() {
-  return process.env.VUE_APP_BASE_API + '/file/upload'
+  return process.env.VUE_APP_BASE_API + '/api/file/upload'
 }

@@ -9,6 +9,7 @@ module.exports = ({ env }) => ({
       socket: {
 				serverOptions: {
 					cors: { origin: '*', methods: ['GET', 'POST'] },
+          path: '/api/socket.io/'
 				},
 			},
       events: [

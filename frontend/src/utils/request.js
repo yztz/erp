@@ -18,7 +18,7 @@ import Strapi from 'strapi-sdk-js'
 
 // console.log(process.env.VUE_APP_STRAPI_URL)
 const strapi = new Strapi({
-  url: process.env.VUE_APP_STRAPI_URL,
+  url: process.env.VUE_APP_BASE_API,
   store: {
     key: "strapi_jwt",
     useLocalStorage: true,
