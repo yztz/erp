@@ -150,7 +150,15 @@ export default {
 
   mounted() {
     this.load()
+    this.$bus.$on('commit', () => {
+      this.load()
+    })
   },
+
+  beforeDestroy() {
+    this.$bus.$off('commit')
+  },
+
   methods: {
     filterAmount(value, row, column) {
       switch(value) {

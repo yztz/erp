@@ -13,6 +13,10 @@ module.exports = createCoreService('api::sale.sale', ({ strapi }) => ({
   async create(params) {
     let { data: sale } = params
 
+    if (!sale ||  isNaN(sale.good)) {
+      strapi.log.info(`[sale] format error, sale: ` + JSON.stringify(sale))
+      throw new ApplicationError("请求格式错误");
+    }
     // 先确保商品存在
     let good = await strapi.entityService.findOne('api::good.good', sale.good)
     if (!good || good.deleted) throw new ApplicationError("商品不存在或已被删除");

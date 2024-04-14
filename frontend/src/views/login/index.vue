@@ -186,33 +186,37 @@ $light_gray: rgba(255, 255, 255, 0.59);
 .login-container {
   min-height: 100%;
   width: 100%;
-  background: url("https://bing.ee123.net/img/rand?w=1920x1200") 0;
+  background: url("https://bing.ee123.net/img/") 0;
   background-size: cover;
   overflow: hidden;
 
   .login-form {
-    background: hsla(0, 0%, 100%, .3);
+
 
     position: relative;
     top: 160px;
     width: 600px;
     max-width: 100%;
     border-radius: 30px;
+    //border-radius: 5px;
     padding: 30px 40px 30px 40px;
     margin: 0 auto;
     overflow: hidden;
     z-index: 1;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.45);
-
   }
   .login-form::before {
     //background: rgba(250, 70, 51, 0.56);
+    background: hsla(187, 40%, 88%, 0.3);
+    //background-attachment: fixed;
+    //background-size: cover;
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    //filter: blur(10px);
     backdrop-filter: blur(10px);
     margin: -20px;
     z-index: -1;
