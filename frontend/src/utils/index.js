@@ -40,7 +40,7 @@ export function parseTime(time, cFormat) {
     h: date.getHours(),
     i: date.getMinutes(),
     s: date.getSeconds(),
-    a: date.getDay()
+    a: date.getDay(),
   }
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
@@ -119,18 +119,18 @@ export function param2Obj(url) {
 }
 
 function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 export function brightenKeyword(val, keyword) {
   keyword = keyword + ''
 
-  val = val + ""
+  val = val + ''
   if (keyword.length > 0) {
     // 将关键字数组转为正则表达式
     const regex = new RegExp(escapeRegExp(keyword), 'gi')
     // 使用replace方法替换匹配的关键字为带有highlight类的span标签
-    return  val.replace(regex, match => `<span class="search-highlight">${match}</span>`)
+    return val.replace(regex, match => `<span class="search-highlight">${match}</span>`)
   } else {
     return val
   }
@@ -138,30 +138,39 @@ export function brightenKeyword(val, keyword) {
 
 export function parseSizes(sizes) {
   // 正则表达式用于验证逗号分隔的尺码（例如 "S,M,L"）和范围的尺码（例如 "35-48"）
-  const commaSeparated = /^[a-zA-Z](,[a-zA-Z])*$/g;
-  const range = /^\d+-\d+$/g;
+  const commaSeparated = /^[a-zA-Z](,[a-zA-Z])*$/g
+  const range = /^\d+-\d+$/g
 
   // 如果是逗号分隔的尺码
   if (commaSeparated.test(sizes)) {
-    return sizes.split(',');
+    return sizes.split(',')
   }
   // 如果是范围的尺码
   else if (range.test(sizes)) {
-    const rangeElements = sizes.split('-');
-    const start = Number(rangeElements[0]);
-    const end = Number(rangeElements[1]);
+    const rangeElements = sizes.split('-')
+    const start = Number(rangeElements[0])
+    const end = Number(rangeElements[1])
     if (start > end) {
-      return null;
+      return null
     }
-    const result = [];
+    const result = []
     for (let i = start; i <= end; i++) {
-      result.push(i.toString());
+      result.push(i.toString())
     }
-    return result;
+    return result
   }
   // 如果尺码信息不符合任何已知的格式
   else {
-    return null;
+    return null
   }
 }
 
+export function concatenateURL(u1, u2) {
+  if (u1.endsWith('/') && u2.startsWith('/')) {
+    return u1 + u2.substring(1)
+  }
+  if (!u1.endsWith('/') && !u2.startsWith('/')) {
+    return u1 + '/' + u2
+  }
+  return u1 + u2
+}
