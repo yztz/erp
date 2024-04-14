@@ -50,7 +50,8 @@
           <el-form-item prop="picture" label="图片">
             <el-upload
               class="picture-uploader"
-              action="/api/upload"
+              :action="uploadURL"
+
               name="files"
               :limit="1"
               accept="image/*"
@@ -73,13 +74,6 @@
         </el-col>
       </el-row>
 
-      <el-row type="flex" justify="space-between" :gutter="20">
-        <el-col :span="12">
-
-        </el-col>
-      </el-row>
-
-
 
 
     </el-form>
@@ -95,6 +89,7 @@
 import { getToken } from '@/utils/auth'
 import { add, update } from '@/api/goods'
 import * as Provider from '@/api/provider'
+import { getUploadUrl } from '@/api/file'
 import assert from 'assert'
 
 const EDITOR_MODE_EDIT = 0
@@ -102,6 +97,9 @@ const EDITOR_MODE_NEW = 1
 export default {
   name: 'goodsEditor',
   computed: {
+    uploadURL() {
+      return getUploadUrl()
+    },
     editorTitle() {
       return this.mode === EDITOR_MODE_EDIT ? '商品编辑' : '新建商品'
     },

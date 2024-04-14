@@ -72,10 +72,10 @@ module.exports = {
     },
     proxy: {
       '/uploads': {
-        target: "http://localhost:8088"
+        target: process.env.VUE_APP_API_BASE_URL
       },
       '/api/upload': {
-        target: "http://localhost:8088"
+        target: process.env.VUE_APP_API_BASE_URL
       },
       // '/socket.io':{
       //   target: "http://localhost:8088"

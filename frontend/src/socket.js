@@ -1,6 +1,7 @@
 import SocketIO from 'socket.io-client'
 
-const io = SocketIO(process.env.VUE_APP_BASE_API, {
+const io = SocketIO(process.env.VUE_APP_API_BASE_URL, {
+  path: process.env.VUE_APP_SOCKET_PREFIX,
   autoConnect: false,
 })
 

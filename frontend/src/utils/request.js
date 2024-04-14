@@ -16,9 +16,10 @@ import qs from 'qs'
 
 import Strapi from 'strapi-sdk-js'
 
-// console.log(process.env.VUE_APP_STRAPI_URL)
+// console.log(process.env.VUE_APP_API_BASE_URL)
 const strapi = new Strapi({
-  url: process.env.VUE_APP_BASE_API,
+  url: process.env.VUE_APP_API_BASE_URL,
+  prefix: process.env.VUE_APP_API_PREFIX,
   store: {
     key: "strapi_jwt",
     useLocalStorage: true,

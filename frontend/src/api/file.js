@@ -1,27 +1,10 @@
-import request from '@/utils/request'
 
-export function upload(file) {
-  return request({
-    url: '/file/upload',
-    method: 'post',
-    data: file,
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
-}
+const API_URL = new URL(process.env.VUE_APP_API_PREFIX, new URL(process.env.VUE_APP_API_BASE_URL)).toString()
 
-export function getPicture(fileName) {
-  return request({
-    url: '/file/fetch',
-    method: 'get',
-    params: {picname: fileName}
-  })
-}
-
-export function getPictureURL(fileName) {
-  return process.env.VUE_APP_BASE_API + '/api/file/fetch/' + fileName
-}
-
+// export function getPictureURL(fileName) {
+//   return new URL('/file/fetch/' + fileName, API_URL).toString()
+// }
 
 export function getUploadUrl() {
-  return process.env.VUE_APP_BASE_API + '/api/file/upload'
+  return API_URL + '/upload'
 }
