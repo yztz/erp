@@ -13,9 +13,14 @@ module.exports = [
       }
     },
   },
+  {
+    name: 'strapi::poweredBy',
+    config: {
+      poweredBy: 'Great YzTz!'
+    },
+  },
   // 'strapi::security',
   'strapi::cors',
-  'strapi::poweredBy',
   'strapi::query',
   'strapi::body',
   'strapi::session',
