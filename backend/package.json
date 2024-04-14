@@ -7,16 +7,16 @@
     "develop": "strapi develop --watch-admin",
     "start": "strapi start",
     "build": "strapi build",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "cs": "config-sync"
   },
   "devDependencies": {},
   "dependencies": {
-    "@strapi/plugin-cloud": "v4.22.1",
-    "@strapi/plugin-documentation": "^v4.22.1",
-    "@strapi/plugin-graphql": "^v4.22.1",
-    "@strapi/plugin-i18n": "v4.22.1",
-    "@strapi/plugin-users-permissions": "v4.22.1",
-    "@strapi/strapi": "v4.22.1",
+    "@strapi/plugin-cloud": "v4.23.0",
+    "@strapi/plugin-documentation": "^v4.23.0",
+    "@strapi/plugin-i18n": "v4.23.0",
+    "@strapi/plugin-users-permissions": "v4.23.0",
+    "@strapi/strapi": "v4.23.0",
     "better-sqlite3": "8.6.0",
     "mysql": "^2.18.1",
     "react": "^18.0.0",
