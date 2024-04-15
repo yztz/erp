@@ -242,26 +242,17 @@ export default {
         let amount = Number.parseInt(searchText)
         let filters = {
           $or: [
-            {
-              good: {
-                $or: [
-                  {code: { $containsi: searchText }},
-                  {color: { $containsi: searchText}},
-                  {
-                    provider: {
-                      name: {$containsi: searchText}
-                    }
-                  },
-                ]
-              }
-            },
+            { good: { code: { $containsi: searchText }}},
+            { good: { color: { $containsi: searchText }}},
+            { good: { provider:{ name: {$containsi: searchText} }}},
             { size: { $containsi: searchText } },
           ]
         }
         if (!Number.isNaN(amount)) { // 数字
-          console.log("amount:", amount);
+          // console.log("amount:", amount);
           filters.$or.push({ amount: { $eq: amount } })
         }
+        console.log(filters)
         return filters
       }
     },
@@ -285,6 +276,7 @@ export default {
         this.loading = false
       }).catch((err) => {
         this.$message.error('查询失败')
+        this.loading = false
       })
     },
     load() {
