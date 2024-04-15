@@ -20,7 +20,7 @@ module.exports = createCoreService('api::provider.provider',({ strapi }) =>  ({
         deleted: true
       }
     })
-    console.log(`Provider ID ${entity.id} deleted`)
+    strapi.log.info(`[provider] delete: ${entity.id}`)
     // 删除所有相关商品
     let deletedGoods = await strapi.db.query('api::good.good').findMany({
       where: {
@@ -38,8 +38,8 @@ module.exports = createCoreService('api::provider.provider',({ strapi }) =>  ({
         strapi.service('api::good.good').delete(id)
       )
     );
-    // console.log(deletedStocks)
-    console.log(`${deletedGoods.length} related goods deleted`)
+
+    strapi.log.info(`[provider] ${deletedGoods.length} related goods deleted`)
     return entity
   }
 }));
