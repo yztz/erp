@@ -186,7 +186,7 @@ $light_gray: rgba(255, 255, 255, 0.59);
 .login-container {
   min-height: 100%;
   width: 100%;
-  background: url("https://bing.ee123.net/img/") 0;
+  background: url("https://bing.img.run/uhd.php") 0;
   background-size: cover;
   overflow: hidden;
 
