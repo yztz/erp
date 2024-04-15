@@ -15,9 +15,11 @@ export async function generateQRURL(stock) {
   return QRCode.toDataURL(text, opts)
 }
 
+import { QRCODE_VERSION } from '@/settings'
+
 function generateQR(el, stock) {
   let good = stock.good
-  let text = `${good.provider.id}|${good.id}|${good.code}|${stock.size}`
+  let text = `${QRCODE_VERSION}|${good.provider.id}|${good.id}|${good.code}|${good.color}|${stock.size}`
   QRCode.toCanvas(el, text,
     opts,
     function(error) {

@@ -25,7 +25,7 @@ let cdn={
       'https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.js', // vuejs
       'https://unpkg.com/element-ui/lib/index.js', // element
       'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js',
-      'https://unpkg.com/browse/echarts@5.5.0/dist/echarts.min.js',
+      'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js',
     ]
   }
 // }
