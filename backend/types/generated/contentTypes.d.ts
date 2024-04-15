@@ -826,6 +826,7 @@ export interface ApiGoodGood extends Schema.CollectionType {
         },
         number
       >;
+    uuid: Attribute.UID;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::good.good', 'oneToOne', 'admin::user'> &
@@ -853,6 +854,7 @@ export interface ApiProviderProvider extends Schema.CollectionType {
     deleted: Attribute.Boolean &
       Attribute.Required &
       Attribute.DefaultTo<false>;
+    uuid: Attribute.UID;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

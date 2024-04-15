@@ -25,7 +25,8 @@
     "strapi-plugin-config-sync": "^1.2.3",
     "strapi-plugin-io": "^2.0.6",
     "strapi-plugin-transformer": "^3.1.2",
-    "styled-components": "5.3.3"
+    "styled-components": "5.3.3",
+    "uuid": "^9.0.1"
   },
   "author": {
     "name": "A Strapi developer"

@@ -28,6 +28,9 @@
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "uuid": {
+      "type": "uid"
     }
   }
 }

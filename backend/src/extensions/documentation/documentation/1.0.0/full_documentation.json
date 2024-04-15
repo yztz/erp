@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-04-15T12:00:01.253Z"
+    "x-generation-date": "2024-04-15T16:40:35.026Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -142,6 +142,9 @@
               "sale_price": {
                 "type": "number",
                 "format": "float"
+              },
+              "uuid": {
+                "type": "string"
               }
             }
           }
@@ -854,6 +857,9 @@
                       "deleted": {
                         "type": "boolean"
                       },
+                      "uuid": {
+                        "type": "string"
+                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -915,6 +921,9 @@
           "sale_price": {
             "type": "number",
             "format": "float"
+          },
+          "uuid": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -1008,6 +1017,9 @@
               },
               "deleted": {
                 "type": "boolean"
+              },
+              "uuid": {
+                "type": "string"
               }
             }
           }
@@ -1079,6 +1091,9 @@
           },
           "deleted": {
             "type": "boolean"
+          },
+          "uuid": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -2165,6 +2180,9 @@
                                   "deleted": {
                                     "type": "boolean"
                                   },
+                                  "uuid": {
+                                    "type": "string"
+                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -2226,6 +2244,9 @@
                       "sale_price": {
                         "type": "number",
                         "format": "float"
+                      },
+                      "uuid": {
+                        "type": "string"
                       },
                       "createdAt": {
                         "type": "string",
@@ -3561,6 +3582,9 @@
                                   "deleted": {
                                     "type": "boolean"
                                   },
+                                  "uuid": {
+                                    "type": "string"
+                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -3622,6 +3646,9 @@
                       "sale_price": {
                         "type": "number",
                         "format": "float"
+                      },
+                      "uuid": {
+                        "type": "string"
                       },
                       "createdAt": {
                         "type": "string",
@@ -4943,6 +4970,9 @@
                                   "deleted": {
                                     "type": "boolean"
                                   },
+                                  "uuid": {
+                                    "type": "string"
+                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -5004,6 +5034,9 @@
                       "sale_price": {
                         "type": "number",
                         "format": "float"
+                      },
+                      "uuid": {
+                        "type": "string"
                       },
                       "createdAt": {
                         "type": "string",

@@ -51,6 +51,9 @@
       "type": "decimal",
       "min": 0,
       "required": true
+    },
+    "uuid": {
+      "type": "uid"
     }
   }
 }
