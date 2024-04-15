@@ -68,7 +68,7 @@
               v-if="scope.row.picture"
               fit="contain"
               style="width: 100px; height: 100px"
-              :src="scope.row.picture.url"
+              :src="scope.row.picture.formats.thumbnail.url"
               :preview-src-list="[scope.row.picture.url]"
             />
             <span v-else>无</span>
