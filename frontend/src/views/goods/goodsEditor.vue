@@ -51,7 +51,7 @@
             <el-upload
               class="picture-uploader"
               :action="uploadURL"
-
+              ref="upload"
               name="files"
               :limit="1"
               accept="image/*"
@@ -106,18 +106,7 @@ export default {
     credentials() {
       return { 'Authorization': 'Bearer ' + getToken() }
     },
-    submitData() {
-      let good = this.goods
-      return {
-        code: good.code,
-        color: good.color,
-        comment: good.comment,
-        provider: good.provider.id,
-        picture: good.picture?.id,
-        purchase_price: good.purchase_price,
-        sale_price: good.sale_price
-      }
-    }
+
   },
   data() {
     return {
@@ -146,6 +135,18 @@ export default {
     }
   },
   methods: {
+    genSubmitData() {
+      let good = this.goods
+      return {
+        code: good.code,
+        color: good.color,
+        comment: good.comment,
+        provider: good.provider.id,
+        picture: good.picture?.id,
+        purchase_price: good.purchase_price,
+        sale_price: good.sale_price
+      }
+    },
     show(goods) {
       this.visible = true
 
@@ -179,7 +180,7 @@ export default {
         this.$refs.form.validate(valid => { // 编辑模式
           if (!valid) return
           if (this.mode === EDITOR_MODE_EDIT) {
-            update(this.goods.id, this.submitData).then((res) => {
+            update(this.goods.id, this.genSubmitData()).then((res) => {
               this.$message.success('更新成功')
               this.$emit('close')
               this.visible = false
@@ -187,7 +188,7 @@ export default {
               this.$message.error('更新失败')
             })
           } else if (this.mode === EDITOR_MODE_NEW) { // 新建模式
-            add(this.submitData).then((res) => {
+            add(this.genSubmitData()).then((res) => {
               this.$message.success('添加成功')
               this.$emit('close')
               this.visible = false
@@ -223,14 +224,16 @@ export default {
       return valid
     },
     handleUploadSuccess(res, file) {
+      console.log(res, file)
       let data = res[0]
 
       this.goods.picture = {
-        url: data.url,
+        url: URL.createObjectURL(file.raw),
         id: data.id
       }
 
       this.$message.success('上传成功')
+      this.$refs.upload.clearFiles();
     },
     uploadVideoProcess(event, file, fileList) {
       this.progressFlag = true // 显示进度条
