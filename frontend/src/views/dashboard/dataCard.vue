@@ -15,9 +15,6 @@ export default {
     title: String,
     value: Number
   },
-
-
-
 };
 </script>
 
@@ -34,7 +31,7 @@ export default {
 }
 
 .el-card {
-  min-width: 250px;
+  min-width: 260px;
 }
 
 .value {

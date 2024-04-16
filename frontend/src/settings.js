@@ -14,4 +14,5 @@ module.exports = {
    */
   sidebarLogo: false,
   QRCODE_VERSION: '1.0',
+  defaultStockThreshold: 50
 }

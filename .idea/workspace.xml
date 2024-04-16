@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9108dff-b71d-4fd8-a9e0-0a1d01a1ebac" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/database/migrations/update_uuid.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/erp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/erp.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="e9108dff-b71d-4fd8-a9e0-0a1d01a1ebac" name="Changes" comment="push: database migration about UUID">
+      <change afterPath="$PROJECT_DIR$/frontend/src/views/dashboard/PSChart/index.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/views/dashboard/StoreChart/index.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/views/dashboard/WarningPanel/index.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/views/dashboard/chart.mixin.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/api/provider/services/provider.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/api/provider/services/provider.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/extensions/documentation/documentation/1.0.0/full_documentation.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/extensions/documentation/documentation/1.0.0/full_documentation.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/layout/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/settings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/dashboard/dataCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/dashboard/dataCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/dashboard/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/dashboard/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Vue Single File Component" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -21,26 +33,34 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2a9Ri9yLrJVwSObCPN4S3IXQbXq" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/erp/frontend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "nodejs_package_manager_path": "yarn",
-    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
-    "ts.external.directory.path": "D:\\WebStorm 2022.2.1\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/erp/frontend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.linters.eslint&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\WebStorm 2022.2.1\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\erp\frontend\src\views\dashboard\StoreChart" />
+    </key>
+  </component>
   <component name="RunManager" selected="Compound.start">
     <configuration name="start" type="CompoundRunConfigurationType">
       <toRun name="backend" type="js.build_tools.npm" />
@@ -83,8 +103,19 @@
       <updated>1703728933907</updated>
       <workItem from="1703728935865" duration="55000" />
       <workItem from="1703729006771" duration="8000" />
-      <workItem from="1713200089139" duration="665000" />
+      <workItem from="1713200089139" duration="748000" />
+      <workItem from="1713200868077" duration="630000" />
+      <workItem from="1713237463809" duration="244000" />
+      <workItem from="1713255628917" duration="4830000" />
     </task>
+    <task id="LOCAL-00001" summary="push: database migration about UUID">
+      <created>1713200809765</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713200809765</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -100,5 +131,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="push: database migration about UUID" />
+    <option name="LAST_COMMIT_MESSAGE" value="push: database migration about UUID" />
   </component>
 </project>
