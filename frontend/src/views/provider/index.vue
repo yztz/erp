@@ -6,7 +6,7 @@
         @click="delayLoad"
         icon="el-icon-refresh-right"
       />
-      <page-size-selector v-model="pageSize"/>
+      <page-size-selector v-model="pageSize" @input="delayLoad"/>
 
       <el-button @click="openEditor(null)" type="primary"
       >添加供应商
@@ -133,11 +133,6 @@ export default {
     }
   },
 
-  watch: {
-    pageSize() {
-      this.delayLoad()
-    }
-  },
 
   mounted() {
     this.load()

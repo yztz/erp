@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-04-16T08:20:52.463Z"
+    "x-generation-date": "2024-04-16T12:37:03.581Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -1422,8 +1422,7 @@
           "data": {
             "required": [
               "amount",
-              "size",
-              "sync"
+              "size"
             ],
             "type": "object",
             "properties": {
@@ -1454,9 +1453,6 @@
               },
               "size": {
                 "type": "string"
-              },
-              "sync": {
-                "type": "boolean"
               }
             }
           }
@@ -1512,8 +1508,7 @@
         "type": "object",
         "required": [
           "amount",
-          "size",
-          "sync"
+          "size"
         ],
         "properties": {
           "good": {
@@ -2364,9 +2359,6 @@
           },
           "size": {
             "type": "string"
-          },
-          "sync": {
-            "type": "boolean"
           },
           "createdAt": {
             "type": "string",

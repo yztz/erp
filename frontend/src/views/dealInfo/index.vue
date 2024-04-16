@@ -1,5 +1,5 @@
 <template>
-  <div class="sale-container">
+  <div class="deal-container">
 
     <div class="global-container">
       <el-button
@@ -9,9 +9,9 @@
         class="add-new"
       ></el-button>
 
-      <page-size-selector v-model="pageSize"/>
+      <page-size-selector @input="delayLoad" v-model="pageSize"/>
       <el-button @click="openCreator" type="primary" class="add-new"
-      >新建出货单
+      >{{ newTitle }}
       </el-button>
       <!--      <transition name="el-fade-in">-->
       <!--        <el-button-->
@@ -25,8 +25,8 @@
       <!--      </transition>-->
     </div>
 
-    <sale-detail @close="delayLoad" ref="detail"/>
-    <sale-creator @close="delayLoad" ref="creator"/>
+    <deal-detail @close="delayLoad" :mode="mode" ref="detail"/>
+    <deal-creator @close="delayLoad" :mode="mode" ref="creator"/>
 
     <div class="table-container">
       <el-table
@@ -35,12 +35,11 @@
         class="table"
         row-key="id"
         :stripe="true"
-        :data="saleData"
+        :data="dealData"
       >
         <el-table-column prop="id" label="ID"/>
         <el-table-column label="创建时间">
           <template v-slot="scope">
-            <!--            <i class="el-icon-time"></i>-->
             <span style="margin-left: 10px">{{ scope.row.createdAt | formatTime }}</span>
           </template>
         </el-table-column>
@@ -55,7 +54,7 @@
               size="small"
             >查看详情
             </el-button>
-            <el-button @click="deleteSale(scope.row)" type="danger" size="small"
+            <el-button @click="deleteDeal(scope.row)" type="danger" size="small"
             >删除
             </el-button>
           </template>
@@ -75,18 +74,24 @@
 </template>
 
 <script>
+import { queryAllPurchaseCollections, delPurchaseCollection } from '@/api/purchase'
 import { queryAllSaleCollections, delSaleCollection } from '@/api/sale'
 import moment from 'moment'
-import SaleDetail from '@/views/sale/saleDetail'
-import SaleCreator from '@/views/sale/saleCreator'
+import DealDetail from '@/views/dealInfo/dealDetail'
+import DealCreator from "@/views/dealInfo/dealCreator";
 import pageSizeSelector from '@/components/PageSizeSelector'
 
+export const DEAL_MODE = {
+  DEAL_PURCHASE_MODE: 0,
+  DEAL_SALE_MODE: 1
+}
 export default {
   name: 'index',
-  components: { SaleCreator, SaleDetail, pageSizeSelector },
+  components: { DealCreator, DealDetail, pageSizeSelector },
+  props: ['mode'],
   data() {
     return {
-      saleData: [],
+      dealData: [],
       loading: false,
 
       pageIndex: 1,
@@ -95,7 +100,24 @@ export default {
     }
   },
   mounted() {
+    // console.log(this.mode)
     this.load()
+  },
+
+  computed: {
+    queryAllDealCollections() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        queryAllPurchaseCollections : queryAllSaleCollections
+    },
+    delDealCollection() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        delPurchaseCollection : delSaleCollection
+    },
+    newTitle() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        "新建进货单" : "新建出货单"
+    }
+
   },
 
   filters: {
@@ -111,14 +133,13 @@ export default {
     openCreator() {
       this.$refs.creator.show()
     },
-    deleteSale(item) {
+    deleteDeal(item) {
       this.$confirm('此操作将永久删除此订单及其附属详单, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delSaleCollection(item.id).then(res => {
-          // console.log(res)
+        this.delDealCollection(item.id).then(res => {
           this.delayLoad()
           this.$message.success('删除成功')
         }).catch(err => {
@@ -128,13 +149,15 @@ export default {
       })
     },
     __load() {
-      queryAllSaleCollections().then(res => {
+      this.queryAllDealCollections({
+        sort: ['createdAt:desc']
+      }).then(res => {
         let { data, meta: { pagination } } = res
 
         this.totalPage = pagination.pageCount
         this.pageIndex = pagination.page
 
-        this.saleData = data
+        this.dealData = data
         this.loading = false
       }).catch(err => {
         this.$message.error('查询失败')
@@ -156,7 +179,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sale-container {
+.deal-container {
   padding: 20px;
 }
 

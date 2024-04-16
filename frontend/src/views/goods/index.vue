@@ -7,7 +7,7 @@
         icon="el-icon-refresh-right"
       />
 
-      <page-size-selector v-model="pageSize"/>
+      <page-size-selector v-model="pageSize" @input="delayLoad"/>
 
       <el-button @click="openEditor(null)" type="primary"
       >添加商品
@@ -117,7 +117,7 @@ import searcher from '@/components/Searcher'
 import SvgIcon from '@/components/SvgIcon'
 import {  generateQRURL } from '@/utils/qrcode'
 import { saveAs } from 'file-saver';
-var JSZip = require('jszip')
+const JSZip = require('jszip')
 
 export default {
   name: 'index',
@@ -147,11 +147,11 @@ export default {
     this.load()
   },
 
-  watch: {
-    pageSize() {
-      this.delayLoad()
-    }
-  },
+  // watch: {
+  //   pageSize() {
+  //     this.delayLoad()
+  //   }
+  // },
 
   methods: {
     openExporter(good) {

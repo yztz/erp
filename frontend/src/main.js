@@ -81,6 +81,9 @@ new Vue({
   beforeCreate(){
     Vue.prototype.$bus = this//安装全局事件总线
     Vue.prototype.$echarts = echarts//安装全局事件总线
+    // 面板模式常量
+    Vue.prototype.$DEAL_PURCHASE = 0
+    Vue.prototype.$DEAL_SALE = 1
   },
   render: h => h(App)
 })

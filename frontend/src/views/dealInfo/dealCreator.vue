@@ -5,16 +5,16 @@
     :visible.sync="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    title="新建出货单"
+    :title="title"
   >
-    <goods-selector ref="form" button-title="添  加" @submit="addSale" />
+    <goods-selector ref="form" button-title="添  加" @submit="addDeal"/>
 
     <el-table
       style="margin-top: 20px"
       height="300px"
       empty-text="请在上方添加订单详情"
       row-key="id"
-      :data="order.sales"
+      :data="order.deals"
     >
       <el-table-column align="center" prop="good.code" label="货号"/>
       <el-table-column align="center" prop="good.color" label="颜色"/>
@@ -24,15 +24,15 @@
         <template v-slot="scope">
           <span style="margin-right: 5px">{{ scope.row.amount }}</span>
           ( 库存:
-          <span  :class="{ red: scope.row.stock < scope.row.amount }">  {{
-            scope.row.stock
-          }}</span> )
+          <span :class="{ red: scope.row.stock < scope.row.amount }">  {{
+              scope.row.stock
+            }}</span> )
         </template>
       </el-table-column>
       <el-table-column align="center" fixed="right" label="操作">
         <template v-slot="scope">
           <el-button @click="remove(scope.row)" type="danger" size="small"
-            >删除
+          >删除
           </el-button>
         </template>
       </el-table-column>
@@ -55,15 +55,28 @@
 </template>
 
 <script>
-import { addSaleCollection, addSale } from "@/api/sale";
+import {addSaleCollection} from "@/api/sale";
+import {addPurchaseCollection} from "@/api/purchase";
 import GoodsSelector from '@/components/GoodSelector'
-import { queryAllStocks } from "@/api/stock";
+import {queryAllStocks} from "@/api/stock";
 import assert from "assert";
 
+import {DEAL_MODE} from './index'
+
 export default {
-  name: "saleCreator",
-  components: { GoodsSelector },
-  computed: {},
+  name: "DealCreator",
+  props: ['mode'],
+  components: {GoodsSelector},
+  computed: {
+    title() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        "新建进货单" : "新建出货单"
+    },
+    addDealCollection() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        addPurchaseCollection : addSaleCollection
+    }
+  },
 
   data() {
     return {
@@ -74,31 +87,31 @@ export default {
     };
   },
   methods: {
-    async addSale(sale) {
+    async addDeal(deal) {
       // 当前列表是否已经存在
-      let id = this.order.sales.findIndex((item) => {
+      let id = this.order.deals.findIndex((item) => {
         return (
-          item.good.id == sale.good.id &&
-          item.provider.id == sale.provider.id &&
-          item.size == sale.size
+          item.good.id === deal.good.id &&
+          item.provider.id === deal.provider.id &&
+          item.size === deal.size
         );
       });
 
       if (id !== -1) {
-        this.order.sales[id].amount += sale.amount;
+        this.order.deals[id].amount += deal.amount;
       } else {
         this.loadingText = "获取库存中";
         this.loading = true;
-        let { data: stocks } = await queryAllStocks({
+        let {data: stocks} = await queryAllStocks({
           filters: {
-            good: sale.good,
-            size: sale.size,
+            good: deal.good,
+            size: deal.size,
           },
         });
         this.loading = false;
         assert(stocks.length <= 1);
-        this.order.sales.push({
-          ...sale,
+        this.order.deals.push({
+          ...deal,
           stock: stocks[0]?.amount || 0,
         });
       }
@@ -106,13 +119,13 @@ export default {
     getDefaultOrder() {
       return {
         comment: "",
-        sales: [],
+        deals: [],
       };
     },
 
     remove(item) {
       // this.order.remove(item)
-      this.order.sales = this.order.sales.filter((obj) => obj !== item);
+      this.order.deals = this.order.deals.filter((obj) => obj !== item);
     },
     show() {
       this.order = this.getDefaultOrder();
@@ -129,19 +142,18 @@ export default {
         return;
       }
 
-      if (this.order.sales.length === 0) {
+      if (this.order.deals.length === 0) {
         this.$message.warning("当前订单未包含任何商品");
         return;
       }
 
       this.loadingText = "正在创建出货单";
       this.loading = true;
-      // addSaleCollection({ comment: this.order.comment }).then(res => {
 
-      addSaleCollection(this.order)
+      this.addDealCollection(this.order)
         .then((res) => {
-          let { data } = res;
-          console.log(res);
+          let {data} = res;
+          // console.log(res);
 
           setTimeout(() => {
             this.loading = false;

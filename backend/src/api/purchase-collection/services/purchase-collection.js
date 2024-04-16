@@ -13,11 +13,7 @@ module.exports = createCoreService('api::purchase-collection.purchase-collection
     // console.log(JSON.stringify(params))
 
     let { data } = params
-    let { purchases, syncFlag } = data
-
-    if (syncFlag === undefined) {
-      throw new errors.ApplicationError('syncFlag is required')
-    }
+    let { deals: purchases } = data
 
     // 创建总单
     let entity = await super.create(params)
@@ -30,7 +26,6 @@ module.exports = createCoreService('api::purchase-collection.purchase-collection
       amount: el.amount,
       purchase_collection: entity.id,
       size: el.size,
-      sync: syncFlag,
     }))
     for (let purchase of purchases) {
       strapi.log.info('[purchase-collection] creating ' + JSON.stringify(purchase))

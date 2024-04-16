@@ -11,7 +11,7 @@ module.exports = createCoreService('api::sale-collection.sale-collection', ({ st
   async create(params) {
 
     let { data } = params
-    let { sales } = data
+    let { deals: sales } = data
 
     //   if (syncFlag === undefined) {
     //     throw new errors.ApplicationError("syncFlag is required");

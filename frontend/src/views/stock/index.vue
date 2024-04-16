@@ -10,7 +10,7 @@
         class="add-new"
       ></el-button>
 
-      <page-size-selector v-model="pageSize"/>
+      <page-size-selector @input="delayLoad" v-model="pageSize"/>
 
       <el-button @click="openCreator" type="primary" class="add-new"
       >新建库存

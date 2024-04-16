@@ -1,12 +1,12 @@
 <template>
   <el-dialog
     :visible.sync="visible"
-    title="进货单详情"
+    :title="title"
     @close="$emit('close')"
   >
     <el-row>
       <el-col class="label" :span="3">订单日期:</el-col>
-      <el-col class="value" :span="6">{{ purchaseTime }}</el-col>
+      <el-col class="value" :span="6">{{ dealTime }}</el-col>
       <el-col></el-col>
     </el-row>
 
@@ -17,7 +17,8 @@
         <el-input autosize :rows="1" @input="commentChanged = true" type="textarea" v-model="item.comment"/>
       </el-col>
       <el-col class="value" :span="2">
-        <el-button v-show="commentChanged" @click="updateComment" type="primary" size="mini" icon="el-icon-check" circle></el-button>
+        <el-button v-show="commentChanged" @click="updateComment" type="primary" size="mini" icon="el-icon-check"
+                   circle></el-button>
       </el-col>
 
 
@@ -31,7 +32,7 @@
       <el-table
         row-key="id"
         v-loading="loading"
-        :data="purchases"
+        :data="deals"
       >
         <el-table-column align="center" prop="good.code" label="货号"/>
         <el-table-column align="center" prop="good.color" label="颜色"/>
@@ -49,14 +50,18 @@
 </template>
 
 <script>
-import { queryPurchaseFromID, updatePurchaseCollection } from '@/api/purchase'
+import {queryPurchaseFromID, updatePurchaseCollection} from '@/api/purchase'
+import {querySaleFromID, updateSaleCollection} from "@/api/sale";
 import moment from 'moment/moment'
 import assert from 'assert'
 
+import {DEAL_MODE} from './index'
+
 export default {
-  name: 'purchaseDetail',
+  props: ['mode'],
+  name: 'DealDetail',
   computed: {
-    purchaseTime() {
+    dealTime() {
       if (this.item == null) return ''
       const datetime = moment(this.item.createdAt)
       return datetime.format('YYYY年MM月DD日 HH:mm:ss')
@@ -64,12 +69,24 @@ export default {
     comment() {
       if (this.item == null) return ''
       return this.item.comment
+    },
+    title() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        "进货单详情" : "出货单详情"
+    },
+    updateDealCollection() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        updatePurchaseCollection : updateSaleCollection
+    },
+    queryDealFromID() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        queryPurchaseFromID : querySaleFromID
     }
   },
   data() {
     return {
       commentChanged: false,
-      purchases: [],
+      deals: [],
       loading: false,
       visible: false,
       item: {}
@@ -84,11 +101,10 @@ export default {
     },
 
     updateComment() {
-      updatePurchaseCollection(this.item.id, this.item).then(res=>{
-        console.log(res)
+      this.updateDealCollection(this.item.id, this.item).then(res => {
         this.$message.success("备注更新成功")
         this.commentChanged = false
-      }).catch(err=>{
+      }).catch(err => {
         this.$message.error("备注更新失败")
       })
     },
@@ -96,15 +112,14 @@ export default {
     load() {
       assert(this.item)
       this.loading = true
-      queryPurchaseFromID(this.item.id, {
+      this.queryDealFromID(this.item.id, {
         pagination: {
           start: 0,
           limit: -1
         }
       }).then(res => {
-        let { data, meta } = res
-        console.log(res)
-        this.purchases = data
+        let {data, meta} = res
+        this.deals = data
         this.loading = false
       })
     }

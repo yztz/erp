@@ -30,11 +30,6 @@
       "type": "string",
       "required": true,
       "minLength": 1
-    },
-    "sync": {
-      "type": "boolean",
-      "default": true,
-      "required": true
     }
   }
 }
