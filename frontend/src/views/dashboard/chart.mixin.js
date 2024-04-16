@@ -15,6 +15,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.chart.resize)
     this.$bus.$off('chart-update')
+    this.chart.dispose()
   },
   methods: {
     refresh() {
