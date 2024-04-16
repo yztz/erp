@@ -56,7 +56,7 @@ import {
   DataZoomComponent,
 } from 'echarts/components'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
-import { SVGRenderer } from 'echarts/renderers'
+import { CanvasRenderer } from 'echarts/renderers'
 
 echarts.use([
   TitleComponent,
@@ -68,7 +68,8 @@ echarts.use([
   LineChart,
   LabelLayout,
   UniversalTransition,
-  SVGRenderer,
+  // SVGRenderer,
+  CanvasRenderer,
   LegendComponent,
   DataZoomComponent
 ])

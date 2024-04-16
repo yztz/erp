@@ -85,9 +85,10 @@
         <el-table-column align="center" label="操作">
           <template v-slot="scope">
             <div>
-              <el-button @click="openEditor(scope.row)" type="primary" size="small">编辑</el-button>
-              <el-button @click="openExporter(scope.row)" type="success" size="small">导出</el-button>
-              <el-button @click="deleteGood(scope.row)" type="danger" size="small">删除</el-button>
+              <el-button @click="openEditor(scope.row)" type="text" size="small">编辑</el-button>
+              <el-button @click="gotoStock(scope.row)" type="text" size="small">库存</el-button><br/>
+              <el-button @click="openExporter(scope.row)" type="text" size="small">条码</el-button>
+              <el-button @click="deleteGood(scope.row)" type="text" style="color: #ea768e" size="small">删除</el-button>
             </div>
 
           </template>
@@ -154,6 +155,9 @@ export default {
   // },
 
   methods: {
+    gotoStock(good) {
+      this.$router.push({ name: 'Stock', params: { code: good.code }})
+    },
     openExporter(good) {
       this.$prompt('请输入尺码:', '提示', {
         confirmButtonText: '确定',

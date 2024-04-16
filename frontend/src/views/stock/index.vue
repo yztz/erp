@@ -16,7 +16,7 @@
       >新建库存
       </el-button>
 
-      <searcher @search="search" :disable="!!currentItem"/>
+      <searcher :search-text="searchText"  @search="search" :disable="!!currentItem"/>
       <!--      <transition name="el-fade-in">-->
       <!--        <el-button-->
       <!--          @click="deleteSelections"-->
@@ -133,6 +133,7 @@ import searcher from '@/components/Searcher'
 export default {
   name: 'index',
   components: { StockCreator, pageSizeSelector, Barcode, searcher },
+  props: ['code'],
   data() {
     return {
       loading: false,
@@ -143,12 +144,13 @@ export default {
       pageIndex: 1,
       totalPage: 0,
       pageSize: 15,
-      searchText: "",
+      searchText: this.code || '' + '',
       currentHighlight: "",
     }
   },
 
   mounted() {
+    // console.log(this.code)
     this.load()
     this.$bus.$on('commit', () => {
       this.load()
@@ -160,19 +162,6 @@ export default {
   },
 
   methods: {
-    filterAmount(value, row, column) {
-      switch(value) {
-        case 0:
-          return row.amount < 0
-        case 1:
-          return row.amount == 0
-        case 2:
-          return row.amount > 0
-      }
-    },
-    tableRowClassName({row,column,rowIndex}) {
-      return row.amount < 0 ? 'row-owe' : ''
-    },
     formatter(value) {
       return brightenKeyword(value, this.currentHighlight)
     },
@@ -245,14 +234,14 @@ export default {
             { good: { code: { $containsi: searchText }}},
             { good: { color: { $containsi: searchText }}},
             { good: { provider:{ name: {$containsi: searchText} }}},
-            { size: { $containsi: searchText } },
+            // { size: { $containsi: searchText } },
           ]
         }
-        if (!Number.isNaN(amount)) { // 数字
-          // console.log("amount:", amount);
-          filters.$or.push({ amount: { $eq: amount } })
-        }
-        console.log(filters)
+        // if (!Number.isNaN(amount)) { // 数字
+        //   // console.log("amount:", amount);
+        //   filters.$or.push({ amount: { $eq: amount } })
+        // }
+        // console.log(filters)
         return filters
       }
     },

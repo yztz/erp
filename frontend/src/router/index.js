@@ -112,6 +112,7 @@ export const constantRoutes = [
       name: "Stock",
       component: () => import('@/views/stock/index'),
       meta: {title: '库存', icon: 'el-icon-receiving'},
+      props: true
     }],
   },
   {

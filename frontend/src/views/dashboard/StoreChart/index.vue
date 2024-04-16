@@ -11,6 +11,17 @@ export default {
     stocks: Array
   },
   mixins: [chartMixin],
+
+  mounted() {
+    // this.chart.on('click', (params)=>{
+    //   // if (params.componentType != 'series'
+    //   console.log(params)
+    // })
+  },
+
+  methods: {
+
+  },
   computed: {
     // 分组聚合 {尺寸:{商品:{数量}}} {商品:数量} {商品ID:商品名称（货号+颜色）}
     stockGroupByGood() {
@@ -152,25 +163,25 @@ export default {
         tooltip: {
           confine: true,
           show: true,
-          trigger: 'axis', // "item" || "axis"
+          trigger: 'item', // "item" || "axis"
           axisPointer: {
             type: 'cross',
           },
-          formatter: function (params) {
-            var result = '<div class="tooltip-title">' + params[0].axisValue + '</div>'
-            params.forEach(function (item) {
-              if (item.value !== '-') {
-                result += '<div class="tooltip-series"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:'
-                  + item.color
-                  + '"></span>'
-                  + '<span>'
-                  + item.seriesName + ': '
-                  + item.value
-                  + '</span></div>'
-              }
-            })
-            return result
-          },
+          // formatter: function (params) {
+          //   var result = '<div class="tooltip-title">' + params[0].axisValue + '</div>'
+          //   params.forEach(function (item) {
+          //     if (item.value !== '-') {
+          //       result += '<div class="tooltip-series"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:'
+          //         + item.color
+          //         + '"></span>'
+          //         + '<span>'
+          //         + item.seriesName + ': '
+          //         + item.value
+          //         + '</span></div>'
+          //     }
+          //   })
+          //   return result
+          // },
         },
       }
     },

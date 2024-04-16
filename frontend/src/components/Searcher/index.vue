@@ -23,6 +23,7 @@ export default {
       type: Number
     },
     disable: Boolean,
+    searchText: String
   },
   data() {
     return {
@@ -31,6 +32,10 @@ export default {
       lastSearchText: ''
     }
   },
+  mounted() {
+    this.value = this.searchText || ''
+  },
+
   methods: {
     input(value) {
       if (this.timer) clearTimeout(this.timer)
