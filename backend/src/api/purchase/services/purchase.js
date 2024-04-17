@@ -11,6 +11,7 @@ const {createCoreService} = require('@strapi/strapi').factories;
 
 module.exports = createCoreService('api::purchase.purchase', ({strapi}) => ({
   async create(params) {
+
     let {data: purchase} = params
 
     if (!purchase || isNaN(purchase.good)) {

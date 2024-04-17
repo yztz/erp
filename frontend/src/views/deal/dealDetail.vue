@@ -14,7 +14,7 @@
       <el-col class="label" :span="3">订单备注:</el-col>
 
       <el-col class="value" :span="6">
-        <el-input autosize :rows="1" @input="commentChanged = true" type="textarea" v-model="item.comment"/>
+        <el-input autosize :rows="1" @input="commentChanged = true" type="textarea" v-model="collectionData.comment"/>
       </el-col>
       <el-col class="value" :span="2">
         <el-button v-show="commentChanged" @click="updateComment" type="primary" size="mini" icon="el-icon-check"
@@ -50,8 +50,8 @@
 </template>
 
 <script>
-import {queryPurchaseFromID, updatePurchaseCollection} from '@/api/purchase'
-import {querySaleFromID, updateSaleCollection} from "@/api/sale";
+import {queryPurchaseFromID, updatePurchaseCollection, queryPurchaseCollectionFromID} from '@/api/purchase'
+import {querySaleFromID, updateSaleCollection, querySaleCollectionFromID} from "@/api/sale";
 import moment from 'moment/moment'
 import assert from 'assert'
 
@@ -62,17 +62,18 @@ export default {
   name: 'DealDetail',
   computed: {
     dealTime() {
-      if (this.item == null) return ''
-      const datetime = moment(this.item.createdAt)
+      if (!this.collectionData.createdAt) return ''
+      const datetime = moment(this.collectionData.createdAt)
       return datetime.format('YYYY年MM月DD日 HH:mm:ss')
     },
-    comment() {
-      if (this.item == null) return ''
-      return this.item.comment
-    },
+
     title() {
       return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
         "进货单详情" : "出货单详情"
+    },
+    queryDealCollectionFromID() {
+      return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
+        queryPurchaseCollectionFromID : querySaleCollectionFromID
     },
     updateDealCollection() {
       return this.mode === DEAL_MODE.DEAL_PURCHASE_MODE ?
@@ -89,19 +90,23 @@ export default {
       deals: [],
       loading: false,
       visible: false,
-      item: {}
+      collectionData: {
+        comment: ''
+      },
+      collectionID: -1,
     }
   },
   methods: {
-    show(item) {
-      this.item = {...item}
+    show(collectionID) {
+      this.collectionID = collectionID
       this.load()
       this.commentChanged = false
       this.visible = true
     },
 
     updateComment() {
-      this.updateDealCollection(this.item.id, this.item).then(res => {
+      assert(this.collectionData)
+      this.updateDealCollection(this.collectionID, this.collectionData).then(res => {
         this.$message.success("备注更新成功")
         this.commentChanged = false
       }).catch(err => {
@@ -109,10 +114,14 @@ export default {
       })
     },
 
-    load() {
-      assert(this.item)
+    async load() {
+      assert(this.collectionID >= 0)
       this.loading = true
-      this.queryDealFromID(this.item.id, {
+
+      let {data} = await this.queryDealCollectionFromID(this.collectionID)
+      this.collectionData = data
+
+      this.queryDealFromID(this.collectionID, {
         pagination: {
           start: 0,
           limit: -1

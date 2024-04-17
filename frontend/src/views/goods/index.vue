@@ -1,5 +1,8 @@
 <template>
   <div class="good-container">
+    <div class="note-container">
+      <Note message="条码功能适用于为商品的不同尺寸批量生成二维码"/>
+    </div>
     <div class="global-container">
       <el-button
         ref="refresh"
@@ -38,10 +41,10 @@
       >
         <el-table-column label="选择" type="selection" />
 
-        <el-table-column  align="center" :width="100" label="ID">
-          <template v-slot="scope">
-            <span v-html="formatter(scope.row.id)"/>
-          </template>
+        <el-table-column prop="id" align="center" width="100" label="ID">
+<!--          <template v-slot="scope">-->
+<!--            <span v-html="formatter(scope.row.id)"/>-->
+<!--          </template>-->
         </el-table-column>
 
         <el-table-column  align="center" label="货号">
@@ -50,7 +53,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="provider.name" label="供应商"/>
+        <el-table-column align="center" prop="provider.name" label="供应商">
+          <template v-slot="scope">
+            <span v-html="formatter(scope.row.provider.name)"/>
+          </template>
+        </el-table-column>
 
         <el-table-column align="center"  label="颜色">
           <template v-slot="scope">
@@ -86,7 +93,7 @@
           <template v-slot="scope">
             <div>
               <el-button @click="openEditor(scope.row)" type="text" size="small">编辑</el-button>
-              <el-button @click="gotoStock(scope.row)" type="text" size="small">库存</el-button><br/>
+              <el-button @click="gotoStock(scope.row.code)" type="text" size="small">库存</el-button><br/>
               <el-button @click="openExporter(scope.row)" type="text" size="small">条码</el-button>
               <el-button @click="deleteGood(scope.row)" type="text" style="color: #ea768e" size="small">删除</el-button>
             </div>
@@ -113,17 +120,20 @@
 import pageSizeSelector from '@/components/PageSizeSelector'
 import { queryAll, del, update, add } from '@/api/goods'
 import goodsEditor from '@/views/goods/goodsEditor'
+import Note from "@/components/Note";
 import { brightenKeyword, parseSizes } from '@/utils'
 import searcher from '@/components/Searcher'
 import SvgIcon from '@/components/SvgIcon'
 import {  generateQRURL } from '@/utils/qrcode'
 import { saveAs } from 'file-saver';
+import gotoStockMixin from "@/views/mixin/gotoStock.mixin";
 const JSZip = require('jszip')
 
 export default {
   name: 'index',
+  mixins: [gotoStockMixin],
   components: {
-    pageSizeSelector, goodsEditor, searcher, SvgIcon
+    pageSizeSelector, goodsEditor, searcher, SvgIcon, Note,
   },
 
   data() {
@@ -155,9 +165,6 @@ export default {
   // },
 
   methods: {
-    gotoStock(good) {
-      this.$router.push({ name: 'Stock', params: { code: good.code }})
-    },
     openExporter(good) {
       this.$prompt('请输入尺码:', '提示', {
         confirmButtonText: '确定',
@@ -270,7 +277,7 @@ export default {
           $or: [
             { code: { $containsi: searchText } },
             { color: { $containsi: searchText } },
-            { comment: { $containsi: searchText } }
+            { provider:{ name: {$containsi: searchText} }},
           ]
         }
         if (!Number.isNaN(id)) { // 数字
@@ -316,6 +323,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.note-container {
+  margin-bottom: 15px;
+}
+
 .good-container {
   padding: 20px;
 }

@@ -6,6 +6,12 @@ export async function queryAllSaleCollections(params) {
   return { data, meta }
 }
 
+export async function querySaleCollectionFromID(id, params) {
+  let { data, meta } = await strapi.findOne('sale-collections', id, params)
+  // data = data.map((el) => ({ id: el.id, ...el.attributes }))
+  return { data, meta }
+}
+
 export async function querySales(params) {
   return await strapi.find('sales', {
     ...params
@@ -45,6 +51,10 @@ export async function addSaleCollection(data) {
 
 export async function addSale(data) {
   return strapi.create('sales', data)
+}
+
+export async function delSale(id) {
+  return strapi.delete('sales', id)
 }
 
 export async function delSaleCollection(id, params) {

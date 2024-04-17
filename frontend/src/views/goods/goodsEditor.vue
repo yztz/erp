@@ -224,7 +224,7 @@ export default {
       return valid
     },
     handleUploadSuccess(res, file) {
-      console.log(res, file)
+      // console.log(res, file)
       let data = res[0]
 
       this.goods.picture = {

@@ -23,7 +23,10 @@ export default {
       type: Number
     },
     disable: Boolean,
-    searchText: String
+    searchText: {
+      default: '',
+      type: String
+    }
   },
   data() {
     return {
@@ -33,11 +36,12 @@ export default {
     }
   },
   mounted() {
-    this.value = this.searchText || ''
+    this.value = this.searchText
   },
 
   methods: {
     input(value) {
+      value = value.trim()
       if (this.timer) clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.lastSearchText = value
@@ -46,6 +50,7 @@ export default {
     },
 
     search(value) {
+      value = value.trim()
       if (value === this.lastSearchText) return
       if (this.timer) clearTimeout(this.timer)
       this.$emit('search', value)

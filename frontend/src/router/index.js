@@ -24,7 +24,7 @@ import Layout from '@/layout'
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
   }
  */
-import {DEAL_MODE} from '@/views/dealInfo'
+import {DEAL_MODE} from '@/views/deal'
 /**
  * constantRoutes
  * a base page that does not have permission requirements
@@ -86,7 +86,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: "Purchase",
-      component: () => import('@/views/dealInfo/index'),
+      component: () => import('@/views/deal/index'),
       props: {mode: DEAL_MODE.DEAL_PURCHASE_MODE},
       meta: {title: '进货', icon: 'el-icon-receiving'},
     }],
@@ -98,7 +98,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: "Sale",
-      component: () => import('@/views/dealInfo/index'),
+      component: () => import('@/views/deal/index'),
       props: {mode: DEAL_MODE.DEAL_SALE_MODE},
       meta: {title: '出货', icon: 'el-icon-shopping-cart-2'},
     }],

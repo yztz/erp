@@ -6,6 +6,12 @@ export async function queryAllPurchaseCollections(params) {
   return { data, meta }
 }
 
+export async function queryPurchaseCollectionFromID(id, params) {
+  let { data, meta } = await strapi.findOne('purchase-collections', id, params)
+  // data = data.map((el) => ({ id: el.id, ...el.attributes }))
+  return { data, meta }
+}
+
 export async function queryPurchases(params) {
   return await strapi.find('purchases', {
     ...params
@@ -45,6 +51,10 @@ export async function addPurchaseCollection(data) {
 
 export async function addPurchase(data) {
   return strapi.create('purchases', data)
+}
+
+export async function delPurchase(id) {
+  return strapi.delete('purchases', id)
 }
 
 export async function delPurchaseCollection(id, params) {

@@ -1,11 +1,11 @@
 "use strict";
 
-const { v4: uuidV4 } = require('uuid');
+const { getUUID } = require('../../../../utils/uuid.js')
 
 module.exports = {
   beforeCreate: async (data) => {
     if (!data.params.data.uuid) {
-      data.params.data.uuid = uuidV4();
+      data.params.data.uuid = getUUID();
     }
   },
 };

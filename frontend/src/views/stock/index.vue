@@ -29,7 +29,6 @@
       <!--      </transition>-->
     </div>
     <div class="table-container">
-        <!-- :cell-class-name="tableRowClassName" -->
       <el-table
         v-loading="loading"
         ref="table"
@@ -55,10 +54,10 @@
             <span v-html="formatter(scope.row.good.provider.name)"/>
           </template>
         </el-table-column>
-        <el-table-column  label="尺寸">
-          <template v-slot="scope">
-            <span v-html="formatter(scope.row.size)"/>
-          </template>
+        <el-table-column prop="size" label="尺寸">
+<!--          <template v-slot="scope">-->
+<!--            <span v-html="formatter(scope.row.size)"/>-->
+<!--          </template>-->
         </el-table-column>
         <!-- <el-table-column prop="amount" label="数量" :filters="[{ text: '欠货', value: 0 }, { text: '缺货', value: 1 }, { text: '有货', value: 2 }]" :filter-method="filterAmount"> -->
         <el-table-column prop="amount" label="数量">
@@ -113,7 +112,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        @current-change="load"
+        @current-change="delayLoad"
         :current-page.sync="pageIndex"
         :page-count="totalPage"
       >
@@ -219,7 +218,7 @@ export default {
 
     delayLoad() {
       this.loading = true
-      setTimeout(this.__load, 500)
+      setTimeout(this.__load, 300)
     },
 
     getFilters() {
@@ -227,8 +226,6 @@ export default {
       if (searchText === '') {
         return undefined
       } else {
-        // console.log(searchText);
-        let amount = Number.parseInt(searchText)
         let filters = {
           $or: [
             { good: { code: { $containsi: searchText }}},
