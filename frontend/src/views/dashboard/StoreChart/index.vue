@@ -163,25 +163,25 @@ export default {
         tooltip: {
           confine: true,
           show: true,
-          trigger: 'item', // "item" || "axis"
+          trigger: 'axis', // "item" || "axis"
           axisPointer: {
             type: 'cross',
           },
-          // formatter: function (params) {
-          //   var result = '<div class="tooltip-title">' + params[0].axisValue + '</div>'
-          //   params.forEach(function (item) {
-          //     if (item.value !== '-') {
-          //       result += '<div class="tooltip-series"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:'
-          //         + item.color
-          //         + '"></span>'
-          //         + '<span>'
-          //         + item.seriesName + ': '
-          //         + item.value
-          //         + '</span></div>'
-          //     }
-          //   })
-          //   return result
-          // },
+          formatter: function (params) {
+            let result = '<div class="tooltip-title">' + params[0].axisValue + '</div>'
+            params.forEach(function (item) {
+              if (item.value !== '-') {
+                result += '<div class="tooltip-series"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:'
+                  + item.color
+                  + '"></span>'
+                  + '<span>'
+                  + item.seriesName + ': '
+                  + item.value
+                  + '</span></div>'
+              }
+            })
+            return result
+          },
         },
       }
     },
